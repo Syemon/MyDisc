@@ -1,26 +1,37 @@
 package com.mydisc.MyDisc.controller;
 
-import com.mydisc.MyDisc.dao.FolderDao;
 import com.mydisc.MyDisc.entity.Folder;
+import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
 public class FolderController {
-    private FolderDao folderDao;
+    private FolderService folderService;
 
     @Autowired
-    public FolderController(FolderDao folderDao) {
-        this.folderDao = folderDao;
+    public FolderController(FolderService folderService) {
+        this.folderService = folderService;
     }
 
     @GetMapping("/folders")
     public List<Folder> list() {
-        return folderDao.findAll();
+        return folderService.findAll();
+    }
+
+    @GetMapping("/folders/{folderId}")
+    public Folder get(@PathVariable UUID folderId) {
+        return folderService.findById(folderId);
+    }
+
+    @PostMapping("/folders")
+    public Folder create(@RequestBody Folder folder) {
+        folderService.save(folder);
+
+        return folder;
     }
 }
