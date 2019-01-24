@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class FolderDaoImpl implements FolderDao {
@@ -21,13 +22,37 @@ public class FolderDaoImpl implements FolderDao {
     }
 
     @Override
-    @Transactional
     public List<Folder> findAll() {
-        Session currentSession = entityManager.unwrap(Session.class);
+        Session session = entityManager.unwrap(Session.class);
 
         Query<Folder> query =
-                currentSession.createQuery("from Folder", Folder.class);
+                session.createQuery("from Folder", Folder.class);
 
         return query.getResultList();
+    }
+
+    @Override
+    public Folder findById(UUID id) {
+        Session session = entityManager.unwrap(Session.class);
+
+        return session.get(Folder.class, id);
+    }
+
+    @Override
+    public void save(Folder folder) {
+        Session session = entityManager.unwrap(Session.class);
+
+        session.saveOrUpdate(folder);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query query = session.createQuery(
+                "delete from Folder where id=:folderId");
+
+        query.setParameter("folderId", id)
+                .executeUpdate();
     }
 }
