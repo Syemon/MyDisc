@@ -34,4 +34,18 @@ public class FolderController {
 
         return folder;
     }
+
+    @PutMapping("/folders")
+    public Folder update(@RequestBody Folder folder) {
+        folderService.save(folder);
+
+        return folder;
+    }
+
+    @DeleteMapping("/folders/{folderId}")
+    public String delete(@PathVariable UUID folderId) {
+        folderService.delete(folderId);
+
+        return "success";
+    }
 }
