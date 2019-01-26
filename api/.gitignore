@@ -22,4 +22,4 @@ browscap.csv
 gradle/wrapper
 gradlew.bat
 gradlew
-
+*.attach*
