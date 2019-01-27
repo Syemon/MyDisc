@@ -28,7 +28,7 @@ public class FolderServiceImpl implements FolderService{
     @Override
     @Transactional
     public Folder findById(UUID id) {
-        return this.findById(id);
+        return this.folderDao.findById(id);
     }
 
     @Override
@@ -40,6 +40,6 @@ public class FolderServiceImpl implements FolderService{
     @Override
     @Transactional
     public void delete(UUID id) {
-        this.delete(id);
+        this.folderDao.deleteById(id);
     }
 }
