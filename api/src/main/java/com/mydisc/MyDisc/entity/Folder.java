@@ -3,6 +3,7 @@ package com.mydisc.MyDisc.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +16,7 @@ public class Folder {
     @Column(name = "id", columnDefinition = "VARCHAR(255)")
     private UUID id;
 
+    @NotNull
     @Column(name="name")
     private String name;
 
