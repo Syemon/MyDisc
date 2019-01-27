@@ -1,12 +1,10 @@
 package com.mydisc.MyDisc.controller;
 
 import com.mydisc.MyDisc.entity.Folder;
-import com.mydisc.MyDisc.exception.ApiErrorResponse;
 import com.mydisc.MyDisc.exception.NotFoundException;
 import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,7 +31,7 @@ public class FolderController {
         try {
             folderService.findById(folderId);
         } catch (Exception exception) {
-            throw new NotFoundException("Student id not found - " + folderId);
+            throw new NotFoundException("Not found - " + folderId);
         }
 
         return folderService.findById(folderId);
