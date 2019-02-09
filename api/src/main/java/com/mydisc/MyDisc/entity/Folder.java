@@ -1,12 +1,12 @@
 package com.mydisc.MyDisc.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name="folder")
@@ -22,12 +22,14 @@ public class Folder {
     @Column(name="name")
     private String name;
 
+    @JsonManagedReference
     @ManyToOne(cascade={CascadeType.ALL})
     @JoinColumn(name="parent_id")
     private Folder parent;
 
+    @JsonBackReference
     @OneToMany(mappedBy="parent")
-    private Set<Folder> children = new HashSet<Folder>();
+    private List<Folder> children;
 
     public Folder() {
 
@@ -54,20 +56,32 @@ public class Folder {
     }
 
     public void setParent(Folder parent) {
+        if (parent == null) {
+            return;
+        }
+
         this.parent = parent;
-        parent.addChild(this);
+
+        if (parent.getChildren() == null) {
+            parent.children = new ArrayList<Folder>();
+        }
+
+        if (!parent.children.contains(this)) {
+            parent.getChildren().add(this);
+        }
     }
 
-    public Set<Folder> getChildren() {
+    public List<Folder> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<Folder> children) {
-        this.children = children;
-    }
+    public void addChild(Folder child) {
+        if (children == null) {
+            children = new ArrayList<Folder>();
+        }
 
-    private void addChild(Folder child) {
-        this.getChildren().add(child);
+        children.add(child);
+        child.setParent(this);
     }
 
     public void removeChild(Folder child) {
@@ -79,8 +93,6 @@ public class Folder {
         return "Folder{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", parent=" + parent +
-                ", children=" + children +
                 '}';
     }
 }

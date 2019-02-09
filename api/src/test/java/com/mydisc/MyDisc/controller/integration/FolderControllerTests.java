@@ -1,6 +1,8 @@
 package com.mydisc.MyDisc.controller.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.MyDiscApplication;
+import com.mydisc.MyDisc.entity.Folder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MyDiscApplication.class)
@@ -41,23 +46,34 @@ public class FolderControllerTests {
     }
 
     @Test
+    public void testCreate() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> body = new HashMap<>();
+        body.put("name", "folder");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        this.mockMvc.perform(post("/api/folders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("folder.name").value("folder"))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.parent").doesNotExist());
+    }
+
+
+    @Test
     public void testListWithNoCreatedFolders() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/folders");
 
         this.mockMvc.perform(get("/api/folders"))
                 .andExpect(status().isOk())
                 .andExpect(
-                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[]"));
-    }
-
-    @Test
-    public void testGetWithNoCreatedFolders() throws Exception {
-        this.mockMvc.perform(get("/api/folders"))
-                .andExpect(status().isOk())
-                .andExpect(
-                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[]"));
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(content().json("{}"));
     }
 
     @Parameterized.Parameters

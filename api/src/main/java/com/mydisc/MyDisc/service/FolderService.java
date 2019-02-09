@@ -1,6 +1,7 @@
 package com.mydisc.MyDisc.service;
 
 import com.mydisc.MyDisc.entity.Folder;
+import com.mydisc.MyDisc.entity.FolderPojo;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,7 +11,7 @@ public interface FolderService {
 
     public Folder findById(UUID id);
 
-    public void save(Folder folder);
+    public Folder save(FolderPojo folderPojo);
 
     public void delete(UUID id);
 }

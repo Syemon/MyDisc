@@ -1,15 +1,19 @@
 package com.mydisc.MyDisc.dao;
 
 import com.mydisc.MyDisc.entity.Folder;
+import com.mydisc.MyDisc.entity.FolderPojo;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Repository
 public class FolderDaoImpl implements FolderDao {
@@ -39,10 +43,25 @@ public class FolderDaoImpl implements FolderDao {
     }
 
     @Override
-    public void save(Folder folder) {
+    public Folder save(FolderPojo folderPojo) {
         Session session = entityManager.unwrap(Session.class);
 
-        session.saveOrUpdate(folder);
+        Folder folder = new Folder();
+        folder.setName(folderPojo.getName());
+        session.save(folder);
+        session.flush();
+        session.refresh(folder);
+
+        try {
+            UUID parentId = UUID.fromString(folderPojo.getParentId());
+            Folder parent = session.get(Folder.class, parentId);
+            folder.setParent(parent);
+        } catch (Exception exc) {
+
+        }
+
+        session.save(folder);
+        return folder;
     }
 
     @Override

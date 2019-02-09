@@ -2,6 +2,7 @@ package com.mydisc.MyDisc.service;
 
 import com.mydisc.MyDisc.dao.FolderDao;
 import com.mydisc.MyDisc.entity.Folder;
+import com.mydisc.MyDisc.entity.FolderPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +34,8 @@ public class FolderServiceImpl implements FolderService{
 
     @Override
     @Transactional
-    public void save(Folder folder) {
-        this.folderDao.save(folder);
+    public Folder save(FolderPojo folderPojo) {
+        return this.folderDao.save(folderPojo);
     }
 
     @Override
