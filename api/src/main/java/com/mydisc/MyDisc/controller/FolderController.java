@@ -3,12 +3,11 @@ package com.mydisc.MyDisc.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.entity.FolderPojo;
-import com.mydisc.MyDisc.exception.NotFoundException;
+import com.mydisc.MyDisc.exception.NotFoundFolderException;
 import com.mydisc.MyDisc.resource.FolderResource;
 import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resources;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +47,7 @@ public class FolderController {
         try {
             folderService.findById(folderId);
         } catch (Exception exception) {
-            throw new NotFoundException("Not found - " + folderId);
+            throw new NotFoundFolderException("Not found - " + folderId);
         }
 
         return folderService.findById(folderId);
@@ -75,9 +74,14 @@ public class FolderController {
 //    }
 
     @DeleteMapping("/folders/{folderId}")
-    public String delete(@PathVariable UUID folderId) {
+    public ResponseEntity delete(@PathVariable UUID folderId) {
+        try {
+            folderService.findById(folderId);
+        } catch (Exception exc) {
+            throw new NotFoundFolderException("Not found - " + folderId);
+        }
         folderService.delete(folderId);
 
-        return "success";
+        return ResponseEntity.noContent().build();
     }
 }

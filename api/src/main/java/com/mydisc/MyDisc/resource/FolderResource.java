@@ -18,11 +18,14 @@ public class FolderResource extends ResourceSupport {
         this.folder = folder;
 
         UUID id = folderObj.getId();
+
         add(linkTo(methodOn(FolderController.class).get(id)).withSelfRel());
 
         if (null != folderObj.getParent()) {
             add(linkTo(methodOn(FolderController.class).get(folderObj.getParent().getId())).withRel("parent"));
         }
+
+        add(linkTo(methodOn(FolderController.class).delete(id)).withRel("delete"));
     }
 
     public Object getFolder() {

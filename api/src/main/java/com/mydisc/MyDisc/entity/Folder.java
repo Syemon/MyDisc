@@ -23,12 +23,12 @@ public class Folder {
     private String name;
 
     @JsonManagedReference
-    @ManyToOne(cascade={CascadeType.ALL})
+    @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="parent_id")
     private Folder parent;
 
     @JsonBackReference
-    @OneToMany(mappedBy="parent")
+    @OneToMany(mappedBy="parent", cascade={CascadeType.PERSIST, CascadeType.MERGE})
     private List<Folder> children;
 
     public Folder() {

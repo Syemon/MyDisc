@@ -2,6 +2,8 @@ package com.mydisc.MyDisc.controller.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.MyDiscApplication;
+import com.mydisc.MyDisc.entity.Folder;
+import org.hibernate.Session;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -13,7 +15,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,6 +33,9 @@ public class FolderControllerTests {
 
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, String> body = new HashMap<>();
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,6 +55,38 @@ public class FolderControllerTests {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
                 .andExpect(jsonPath( "_links.parent").doesNotExist());
+    }
+
+    @Test
+    @Transactional
+    public void testDelete() throws Exception {
+        Folder folder = getFolder("folder");
+
+        this.mockMvc.perform(delete("/api/folders/{folderId}", folder.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteParent() throws Exception {
+        Folder parent = getFolder("folder");
+        Folder children = getFolder("folder");
+
+        this.mockMvc.perform(delete("/api/folders/{folderId}", parent.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteChildren() throws Exception {
+        Folder parent = getFolder("folder");
+        Folder children = getFolder("folder");
+
+        this.mockMvc.perform(delete("/api/folders/{folderId}", children.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -91,5 +132,15 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    private Folder getFolder(String name) {
+        Folder folder = new Folder(name);
+        entityManager.unwrap(Session.class);
+        entityManager.persist(folder);
+        entityManager.flush();
+
+        return folder;
     }
 }

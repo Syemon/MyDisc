@@ -1,6 +1,5 @@
 package com.mydisc.MyDisc.exception;
 
-import org.springframework.boot.context.properties.bind.validation.BindValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -8,7 +7,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ApiErrorResponse> handleException(NotFoundException exc) {
+    public ResponseEntity<ApiErrorResponse> handleException(NotFoundFolderException exc) {
         ApiErrorResponse error = new ApiErrorResponse();
 
         error.setStatus(HttpStatus.NOT_FOUND.value());
