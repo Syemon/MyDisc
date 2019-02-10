@@ -2,8 +2,6 @@ package com.mydisc.MyDisc.controller.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.MyDiscApplication;
-import com.mydisc.MyDisc.entity.Folder;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -15,41 +13,27 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MyDiscApplication.class)
 @AutoConfigureMockMvc()
 public class FolderControllerTests {
 
-    private static MediaType MEDIA_TYPE_JSON;
+    private ObjectMapper mapper = new ObjectMapper();
+    private Map<String, String> body = new HashMap<>();
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Before
-    public void setUpJsonMediaType() {
-        MEDIA_TYPE_JSON =
-                new MediaType(
-                        MediaType.APPLICATION_JSON.getType(),
-                        MediaType.APPLICATION_JSON.getSubtype(),
-                        Charset.forName("utf8")
-                );
-    }
-
     @Test
     public void testCreate() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, String> body = new HashMap<>();
-        body.put("name", "folder");
+        this.body.put("name", "folder");
         String jsonBody = mapper.writeValueAsString(body);
 
         this.mockMvc.perform(post("/api/folders")
@@ -64,9 +48,19 @@ public class FolderControllerTests {
                 .andExpect(jsonPath( "_links.parent").doesNotExist());
     }
 
-
     @Test
     public void testListWithNoCreatedFolders() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/folders");
+
+        this.mockMvc.perform(get("/api/folders"))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(content().json("{}"));
+    }
+
+    @Test
+    public void testList() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/folders");
 
         this.mockMvc.perform(get("/api/folders"))
