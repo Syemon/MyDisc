@@ -17,5 +17,7 @@ public interface FolderDao {
 
     public Folder save(FolderPojo folderPojo);
 
+    public Folder update(FolderPojo folderPojo);
+
     public void deleteById(UUID id);
 }

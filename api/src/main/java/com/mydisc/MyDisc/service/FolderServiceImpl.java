@@ -40,6 +40,12 @@ public class FolderServiceImpl implements FolderService{
 
     @Override
     @Transactional
+    public Folder rename(FolderPojo folderPojo) {
+        return this.folderDao.update(folderPojo);
+    }
+
+    @Override
+    @Transactional
     public void delete(UUID id) {
         this.folderDao.deleteById(id);
     }

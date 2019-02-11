@@ -13,5 +13,7 @@ public interface FolderService {
 
     public Folder save(FolderPojo folderPojo);
 
+    public Folder rename(FolderPojo folderPojo);
+
     public void delete(UUID id);
 }

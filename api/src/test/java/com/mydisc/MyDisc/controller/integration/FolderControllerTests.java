@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.MyDiscApplication;
 import com.mydisc.MyDisc.entity.Folder;
 import org.hibernate.Session;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -19,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.*;
@@ -87,6 +86,34 @@ public class FolderControllerTests {
         this.mockMvc.perform(delete("/api/folders/{folderId}", children.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Transactional
+    public void testRename() throws Exception {
+        Folder folder = getFolder("folder");
+        UUID folderId = folder.getId();
+
+        String newName = "new Folder";
+        this.body.put("name", newName);
+        String jsonBody = mapper.writeValueAsString(body);
+
+        this.mockMvc.perform(patch("/api/folders/{folderId}", folderId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("folder.name").value(newName))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.parent").doesNotExist());
+
+
+        Session session = entityManager.unwrap(Session.class);
+        Folder renamedFolder = session.get(Folder.class, folderId);
+
+        Assert.assertEquals(newName, renamedFolder.getName());
     }
 
     @Test

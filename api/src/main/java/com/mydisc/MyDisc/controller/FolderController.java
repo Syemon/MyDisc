@@ -58,20 +58,28 @@ public class FolderController {
     public FolderResource create(@RequestBody FolderPojo folderPojo) {
         Folder folder = folderService.save(folderPojo);
 
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, String> body = new HashMap<>();
         body.put("name", folder.getName());
 
         return new FolderResource(folder, body);
     }
-//
-//    @PutMapping("/folders")
-//    @ResponseStatus(HttpStatus.ACCEPTED)
-//    public Folder update(@RequestBody FolderPojo folder) {
-//        folderService.save(folder);
-//
-//        return folder;
-//    }
+
+    @PatchMapping(value = "/folders/{folderId}", produces = { "application/hal+json" })
+    public FolderResource rename(@PathVariable UUID folderId, @RequestBody FolderPojo folderPojo) {
+        try {
+            folderService.findById(folderId);
+        } catch (Exception exc) {
+            throw new NotFoundFolderException("Not found - " + folderId);
+        }
+
+        folderPojo.setId(folderId);
+        Folder folder = folderService.rename(folderPojo);
+
+        Map<String, String> body = new HashMap<>();
+        body.put("name", folder.getName());
+
+        return new FolderResource(folder, body);
+    }
 
     @DeleteMapping("/folders/{folderId}")
     public ResponseEntity delete(@PathVariable UUID folderId) {
