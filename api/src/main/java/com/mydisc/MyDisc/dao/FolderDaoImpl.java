@@ -39,6 +39,29 @@ public class FolderDaoImpl implements FolderDao {
     }
 
     @Override
+    public List<Folder> findChildren() {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query<Folder> query =
+                session.createQuery(
+                        "SELECT f FROM Folder AS f \n" +
+                        "LEFT JOIN Folder AS p \n" +
+                        "ON f.parent = p \n" +
+                        "WHERE p IS NULL", Folder.class);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Folder> findChildren(UUID folderId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Folder folder = session.get(Folder.class, folderId);
+
+        return folder.getChildren();
+    }
+
+    @Override
     public Folder save(FolderPojo folderPojo) {
         Session session = entityManager.unwrap(Session.class);
 

@@ -18,4 +18,8 @@ public interface FolderDao {
     public Folder update(FolderPojo folderPojo);
 
     public void deleteById(UUID id);
+
+    List<Folder> findChildren();
+
+    List<Folder> findChildren(UUID folderId);
 }
