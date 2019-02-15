@@ -33,6 +33,16 @@ public class FolderServiceImpl implements FolderService{
     }
 
     @Override
+    public List<Folder> findChildren() {
+        return this.folderDao.findChildren();
+    }
+
+    @Override
+    public List<Folder> findChildren(UUID folderId) {
+        return this.folderDao.findChildren(folderId);
+    }
+
+    @Override
     @Transactional
     public Folder save(FolderPojo folderPojo) {
         return this.folderDao.save(folderPojo);

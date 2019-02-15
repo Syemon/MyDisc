@@ -16,4 +16,8 @@ public interface FolderService {
     public Folder rename(FolderPojo folderPojo);
 
     public void delete(UUID id);
+
+    public List<Folder> findChildren();
+
+    public List<Folder> findChildren(UUID folderId);
 }

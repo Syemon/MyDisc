@@ -42,6 +42,44 @@ public class FolderController {
         return ResponseEntity.ok(resources);
     }
 
+    @GetMapping(value = "/folders/root/children", produces = { "application/hal+json" })
+    public ResponseEntity<Resources<FolderResource>> listChildren() {
+        List<Folder> folders = folderService.findChildren();
+
+        List<FolderResource> folderResources = new ArrayList<>();
+
+        for (Folder folder : folders) {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> body = new HashMap<>();
+            body.put("name", folder.getName());
+
+            folderResources.add(new FolderResource(folder, body));
+        }
+
+        Resources<FolderResource> resources = new Resources<>(folderResources);
+
+        return ResponseEntity.ok(resources);
+    }
+
+    @GetMapping(value = "/folders/{folderId}/children", produces = { "application/hal+json" })
+    public ResponseEntity<Resources<FolderResource>> listChildren(@PathVariable UUID folderId) {
+        List<Folder> folders = folderService.findChildren(folderId);
+
+        List<FolderResource> folderResources = new ArrayList<>();
+
+        for (Folder folder : folders) {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> body = new HashMap<>();
+            body.put("name", folder.getName());
+
+            folderResources.add(new FolderResource(folder, body));
+        }
+
+        Resources<FolderResource> resources = new Resources<>(folderResources);
+
+        return ResponseEntity.ok(resources);
+    }
+
     @GetMapping("/folders/{folderId}")
     public Folder get(@PathVariable UUID folderId) {
         try {

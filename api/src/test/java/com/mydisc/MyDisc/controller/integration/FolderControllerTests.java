@@ -118,8 +118,6 @@ public class FolderControllerTests {
 
     @Test
     public void testListWithNoCreatedFolders() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/folders");
-
         this.mockMvc.perform(get("/api/folders"))
                 .andExpect(status().isOk())
                 .andExpect(
@@ -128,10 +126,49 @@ public class FolderControllerTests {
     }
 
     @Test
+    @Transactional
     public void testList() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/folders");
+        String parentName = "parent";
+        String childrenOneName = "children1";
+        String childrenTwoName = "children2";
 
-        this.mockMvc.perform(get("/api/folders"))
+        Folder parent = this.getFolder(parentName);
+        Folder children1 = this.getFolder(childrenOneName);
+        children1.setParent(parent);
+        Folder children2 = this.getFolder(childrenTwoName);
+        children2.setParent(parent);
+        entityManager.unwrap(Session.class);
+        entityManager.persist(children1);
+        entityManager.persist(children2);
+        entityManager.flush();
+
+
+        this.mockMvc.perform(get("/api/folders/{folderId}/children", parent.getId()))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(content().json("{}"));
+    }
+
+    @Test
+    @Transactional
+    public void testRootList() throws Exception {
+        String parentName = "parent";
+        String childrenOneName = "children1";
+        String childrenTwoName = "children2";
+
+        Folder parent = this.getFolder(parentName);
+        Folder children1 = this.getFolder(childrenOneName);
+        children1.setParent(parent);
+        Folder children2 = this.getFolder(childrenTwoName);
+        children2.setParent(parent);
+        entityManager.unwrap(Session.class);
+        entityManager.persist(children1);
+        entityManager.persist(children2);
+        entityManager.flush();
+
+
+        this.mockMvc.perform(get("/api/folders/root/children"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith("application/hal+json"))
