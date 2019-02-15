@@ -22,12 +22,10 @@ public class Folder {
     @Column(name="name")
     private String name;
 
-    @JsonManagedReference
     @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="parent_id")
     private Folder parent;
 
-    @JsonBackReference
     @OneToMany(mappedBy="parent", cascade={CascadeType.PERSIST, CascadeType.MERGE})
     private List<Folder> children;
 
