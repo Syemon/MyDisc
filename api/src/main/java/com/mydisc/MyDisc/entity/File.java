@@ -31,7 +31,7 @@ public class File {
 
     @NotNull
     @Column(name="size")
-    private Long size;
+    private long size;
 
     @Nullable
     @Column(name="deleted")
@@ -65,11 +65,11 @@ public class File {
         this.type = type;
     }
 
-    public Long getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
