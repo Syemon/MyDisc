@@ -44,6 +44,7 @@ public class FileControllerTests {
     private WebApplicationContext webApplicationContext;
 
     @Test
+    @Transactional
     public void testCreate() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
@@ -60,9 +61,9 @@ public class FileControllerTests {
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
-        entityManager.unwrap(Session.class);
-        entityManager.persist(folder);
-        entityManager.flush();
+        this.entityManager.unwrap(Session.class);
+        this.entityManager.persist(folder);
+        this.entityManager.flush();
 
         return folder;
     }
