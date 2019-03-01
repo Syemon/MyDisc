@@ -175,6 +175,32 @@ public class FolderControllerTests {
                 .andExpect(content().json("{}"));
     }
 
+    @Test
+    @Transactional
+    public void testGet() throws Exception {
+        String name = "folder";
+
+        Folder folder = this.getFolder(name);
+        Folder children = this.getFolder("children");
+        children.setParent(folder);
+        entityManager.unwrap(Session.class);
+        entityManager.persist(children);
+        entityManager.flush();
+
+
+        this.mockMvc.perform(get("/api/folders/{folderId}", folder.getId()))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+
+
+                .andExpect(jsonPath("folder.id").value(folder.getId().toString()))
+                .andExpect(jsonPath("folder.name").value(name))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.parent").doesNotExist());
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -191,7 +217,7 @@ public class FolderControllerTests {
     public int expected;
 
     @Test
-    public void testGetValidation() throws Exception {
+    public void testGetIdValidation() throws Exception {
         this.mockMvc.perform(get("/api/folders/{serviceId}", input))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

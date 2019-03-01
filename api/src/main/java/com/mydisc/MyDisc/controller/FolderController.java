@@ -81,14 +81,19 @@ public class FolderController {
     }
 
     @GetMapping("/folders/{folderId}")
-    public Folder get(@PathVariable UUID folderId) {
+    public FolderResource get(@PathVariable UUID folderId) {
         try {
             folderService.findById(folderId);
         } catch (Exception exception) {
             throw new NotFoundFolderException("Not found - " + folderId);
         }
+        Folder folder = folderService.findById(folderId);
 
-        return folderService.findById(folderId);
+        Map<String, String> body = new HashMap<>();
+        body.put("id", folder.getId().toString());
+        body.put("name", folder.getName());
+        
+        return new FolderResource(folder, body);
     }
 
 
