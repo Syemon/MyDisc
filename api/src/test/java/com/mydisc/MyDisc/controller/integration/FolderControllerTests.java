@@ -201,6 +201,21 @@ public class FolderControllerTests {
                 .andExpect(jsonPath( "_links.parent").doesNotExist());
     }
 
+    @Test
+    public void testGetRoot() throws Exception {
+        String name = "root";
+
+        this.mockMvc.perform(get("/api/folders/{folderId}", "root"))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("folder.id").value(name))
+                .andExpect(jsonPath("folder.name").value(name))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.parent").doesNotExist());
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {

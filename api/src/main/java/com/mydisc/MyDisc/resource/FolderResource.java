@@ -15,6 +15,13 @@ public class FolderResource extends ResourceSupport {
     private Folder folder;
     private Map<String, String> body;
 
+    public FolderResource(Map<String, String> body) {
+        this.body = body;
+
+        add(linkTo(methodOn(FolderController.class).get()).withSelfRel());
+        add(linkTo(methodOn(FolderController.class).listChildren()).withRel("children"));
+    }
+
     public FolderResource(Folder folder, Map<String, String> body) {
         this.folder = folder;
         this.body = body;

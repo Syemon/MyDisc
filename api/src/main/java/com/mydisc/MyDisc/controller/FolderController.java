@@ -80,6 +80,15 @@ public class FolderController {
         return ResponseEntity.ok(resources);
     }
 
+    @GetMapping("/folders/root")
+    public FolderResource get() {
+        Map<String, String> body = new HashMap<>();
+        body.put("id", "root");
+        body.put("name", "root");
+
+        return new FolderResource(body);
+    }
+
     @GetMapping("/folders/{folderId}")
     public FolderResource get(@PathVariable UUID folderId) {
         try {
