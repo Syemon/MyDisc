@@ -55,7 +55,17 @@ public class FileControllerTests {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/{folderId}/files", folder.getId())
                 .file(multipartFile))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("file.id").exists())
+                .andExpect(jsonPath("file.name").exists())
+                .andExpect(jsonPath("file.type").exists())
+                .andExpect(jsonPath("file.size").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.folder").exists())
+                .andExpect(jsonPath( "_links.folder.href").exists());
     }
 
     @Transactional
