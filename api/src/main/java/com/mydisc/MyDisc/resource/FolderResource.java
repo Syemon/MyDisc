@@ -5,6 +5,7 @@ import com.mydisc.MyDisc.controller.FolderController;
 import com.mydisc.MyDisc.entity.Folder;
 import org.springframework.hateoas.ResourceSupport;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -12,9 +13,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class FolderResource extends ResourceSupport {
     private Folder folder;
-    private Object body;
+    private Map<String, String> body;
 
-    public FolderResource(Folder folder, Object body) {
+    public FolderResource(Folder folder, Map<String, String> body) {
         this.folder = folder;
         this.body = body;
 
@@ -33,11 +34,11 @@ public class FolderResource extends ResourceSupport {
     }
 
     @JsonProperty("folder")
-    public Object getBody() {
+    public Map<String, String> getBody() {
         return body;
     }
 
-    public void setBody(Object body) {
+    public void setBody(Map<String, String> body) {
         this.body = body;
     }
 }
