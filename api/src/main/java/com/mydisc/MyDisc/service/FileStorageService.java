@@ -3,6 +3,7 @@ package com.mydisc.MyDisc.service;
 import com.mydisc.MyDisc.exception.FileNotFoundException;
 import com.mydisc.MyDisc.exception.FileStorageException;
 import com.mydisc.MyDisc.property.FileStorageProperties;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -15,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class FileStorageService {
@@ -32,7 +35,8 @@ public class FileStorageService {
         }
     }
 
-    public String storeFile(MultipartFile file) {
+    public Map<String, String> storeFile(MultipartFile file) {
+        Map<String, String> fileNames = new HashMap<>();
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
@@ -40,10 +44,14 @@ public class FileStorageService {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            String storedFileName = RandomStringUtils.randomAlphanumeric(16);
+            fileNames.put("fileName", fileName);
+            fileNames.put("storageFileName", storedFileName);
+
+            Path targetLocation = this.fileStorageLocation.resolve(storedFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            return fileNames;
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }

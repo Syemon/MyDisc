@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Repository
@@ -24,22 +25,20 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public File save(UUID folderId, MultipartFile rawFile, String fileName) {
+    public File save(UUID folderId, MultipartFile rawFile, Map<String, String> fileNames) {
         Session session = entityManager.unwrap(Session.class);
 
         Folder folder = session.get(Folder.class, folderId);
         File file = new File();
         file.setFolder(folder);
-        file.setName(fileName);
+        file.setName(fileNames.get("fileName"));
+        file.setStorageName(fileNames.get("storageFileName"));
         file.setType(rawFile.getContentType());
-
         file.setSize(rawFile.getSize());
 
         session.save(file);
         session.flush();
-        session.refresh(folder);
 
-        session.save(folder);
         return file;
     }
 }

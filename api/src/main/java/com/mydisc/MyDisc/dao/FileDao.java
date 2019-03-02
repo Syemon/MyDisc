@@ -7,9 +7,10 @@ import com.mydisc.MyDisc.entity.FolderPojo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface FileDao {
 
-    public File save(UUID folderId, MultipartFile rawFile, String fileName);
+    public File save(UUID folderId, MultipartFile rawFile, Map<String, String> fileNames);
 }

@@ -26,6 +26,10 @@ public class File {
     private String name;
 
     @NotNull
+    @Column(name="storage_name")
+    private String storageName;
+
+    @NotNull
     @Column(name="type")
     private String type;
 
@@ -55,6 +59,14 @@ public class File {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getStorageName() {
+        return storageName;
+    }
+
+    public void setStorageName(String storageName) {
+        this.storageName = storageName;
     }
 
     public String getType() {
