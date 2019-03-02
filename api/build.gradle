@@ -30,6 +30,14 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompile 'com.h2database:h2:1.4.197'
 	compile("org.springframework.boot:spring-boot-starter-hateoas")
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 	testCompile("com.jayway.jsonpath:json-path")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
+	testCompile "org.junit.jupiter:junit-jupiter-api:5.2.0"
+	testCompile "org.junit.jupiter:junit-jupiter-params:5.2.0"
+	testRuntime "org.junit.jupiter:junit-jupiter-engine:5.2.0"
+}
+
+test {
+	useJUnitPlatform()
 }
