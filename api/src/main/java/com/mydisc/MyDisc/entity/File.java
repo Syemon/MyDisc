@@ -17,6 +17,7 @@ public class File {
     @Column(name = "id", columnDefinition = "VARCHAR(255)")
     private UUID id;
 
+    @Nullable
     @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="folder_id")
     private Folder folder;

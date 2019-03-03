@@ -4,14 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.MyDiscApplication;
 import com.mydisc.MyDisc.entity.Folder;
 import org.hibernate.Session;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +20,6 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.persistence.EntityManager;
 import java.util.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -54,6 +50,30 @@ public class FileControllerTests {
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/{folderId}/files", folder.getId())
+                .file(multipartFile))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("file.id").exists())
+                .andExpect(jsonPath("file.name").exists())
+                .andExpect(jsonPath("file.type").exists())
+                .andExpect(jsonPath("file.size").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.folder").exists())
+                .andExpect(jsonPath( "_links.folder.href").exists());
+    }
+
+    @Test
+    @Transactional
+    public void testCreate_InRootFolder() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "Spring Framework".getBytes());
+
+        String jsonBody = mapper.writeValueAsString(body);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
                 .file(multipartFile))
                 .andExpect(status().isOk())
                 .andExpect(

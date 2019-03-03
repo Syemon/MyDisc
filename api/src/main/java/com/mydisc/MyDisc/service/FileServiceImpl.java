@@ -21,6 +21,14 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
+    public File upload(MultipartFile rawFile) {
+        Map<String, String> fileNames = fileStorageService.storeFile(rawFile);
+
+        return fileDao.save(rawFile, fileNames);
+    }
+
+    @Override
+    @Transactional
     public File upload(UUID folderId, MultipartFile rawFile) {
         Map<String, String> fileNames = fileStorageService.storeFile(rawFile);
 

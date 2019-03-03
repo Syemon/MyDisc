@@ -18,6 +18,14 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+    @PostMapping(value = "/folders/root/files", produces = { "application/hal+json" })
+    public FileResource upload(@RequestPart("file")MultipartFile file) {
+        File resultFile = fileService.upload(file);
+        Map<String, String> body = FileResourceBodyProcessor.getFullFileBody(resultFile);
+
+        return new FileResource(resultFile, body);
+    }
+
     @PostMapping(value = "/folders/{folderId}/files", produces = { "application/hal+json" })
     public FileResource upload(@PathVariable("folderId") UUID folderId, @RequestPart("file")MultipartFile file) {
         File resultFile = fileService.upload(folderId, file);

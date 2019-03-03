@@ -20,15 +20,34 @@ public class FileDaoImpl implements FileDao {
     private EntityManager entityManager;
 
     @Autowired
+    private FolderDao folderDao;
+
+    @Autowired
     public FileDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    public File save(MultipartFile rawFile, Map<String, String> fileNames) {
+        Session session = entityManager.unwrap(Session.class);
+
+        File file = new File();
+        file.setName(fileNames.get("fileName"));
+        file.setStorageName(fileNames.get("storageFileName"));
+        file.setType(rawFile.getContentType());
+        file.setSize(rawFile.getSize());
+
+        session.save(file);
+        session.flush();
+
+        return file;
     }
 
     @Override
     public File save(UUID folderId, MultipartFile rawFile, Map<String, String> fileNames) {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = session.get(Folder.class, folderId);
+        Folder folder = folderDao.findById(folderId);
         File file = new File();
         file.setFolder(folder);
         file.setName(fileNames.get("fileName"));
