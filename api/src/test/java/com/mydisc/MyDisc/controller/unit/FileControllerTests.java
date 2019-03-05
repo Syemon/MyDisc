@@ -4,12 +4,14 @@ import com.mydisc.MyDisc.controller.FileController;
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.service.FileService;
+import com.mydisc.MyDisc.service.FolderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +35,9 @@ public class FileControllerTests {
 
     @MockBean
     private FileService fileService;
+
+    @MockBean
+    private FolderService folderService;
 
     @MockBean
     private Folder folder;
@@ -100,5 +105,56 @@ public class FileControllerTests {
                 .andExpect(jsonPath( "_links.self.href").exists())
                 .andExpect(jsonPath( "_links.folder").exists())
                 .andExpect(jsonPath( "_links.folder.href").exists());
+    }
+
+    @Test
+    public void testGet_WithRootFolder() throws Exception {
+        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
+        when(this.file.getFolder()).thenReturn(null);
+
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "Spring Framework".getBytes());
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/folders/root/files/{fileId}",
+                this.file.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("file.id").exists())
+                .andExpect(jsonPath("file.name").exists())
+                .andExpect(jsonPath("file.type").exists())
+                .andExpect(jsonPath("file.size").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.folder").exists())
+                .andExpect(jsonPath( "_links.folder.href").exists())
+                .andExpect(jsonPath( "_links.download.href").exists());
+    }
+
+    @Test
+    public void testGet_WithSomeFolder() throws Exception {
+        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
+        when(this.folder.getId()).thenReturn(UUID.randomUUID());
+        when(this.file.getFolder()).thenReturn(this.folder);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.get(
+                "/api/folders/{folderId}/files/{fileId}", this.folder.getId(), this.file.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("file.id").exists())
+                .andExpect(jsonPath("file.name").exists())
+                .andExpect(jsonPath("file.type").exists())
+                .andExpect(jsonPath("file.size").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.folder").exists())
+                .andExpect(jsonPath( "_links.folder.href").exists())
+                .andExpect(jsonPath( "_links.download.href").exists());
     }
 }
