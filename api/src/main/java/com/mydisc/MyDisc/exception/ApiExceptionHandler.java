@@ -25,7 +25,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ApiErrorResponse> handleException(NotFoundFolderException exc) {
+    public ResponseEntity<ApiErrorResponse> handleException(FolderNotFoundException exc) {
         ApiErrorResponse error = new ApiErrorResponse();
 
         error.setStatus(HttpStatus.NOT_FOUND.value());
