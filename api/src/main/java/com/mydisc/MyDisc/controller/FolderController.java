@@ -3,7 +3,7 @@ package com.mydisc.MyDisc.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.entity.FolderPojo;
-import com.mydisc.MyDisc.exception.NotFoundFolderException;
+import com.mydisc.MyDisc.exception.FolderNotFoundException;
 import com.mydisc.MyDisc.resource.FolderResource;
 import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +94,7 @@ public class FolderController {
         try {
             folderService.findById(folderId);
         } catch (Exception exception) {
-            throw new NotFoundFolderException("Not found - " + folderId);
+            throw new FolderNotFoundException("Not found - " + folderId);
         }
         Folder folder = folderService.findById(folderId);
 
@@ -121,7 +121,7 @@ public class FolderController {
         try {
             folderService.findById(folderId);
         } catch (Exception exc) {
-            throw new NotFoundFolderException("Not found - " + folderId);
+            throw new FolderNotFoundException("Not found - " + folderId);
         }
 
         folderPojo.setId(folderId);
@@ -138,7 +138,7 @@ public class FolderController {
         try {
             folderService.findById(folderId);
         } catch (Exception exc) {
-            throw new NotFoundFolderException("Not found - " + folderId);
+            throw new FolderNotFoundException("Not found - " + folderId);
         }
         folderService.delete(folderId);
 

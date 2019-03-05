@@ -12,6 +12,8 @@ import java.util.UUID;
 
 public interface FileDao {
 
+    public File findById(UUID fileId);
+    public File findById(UUID folderId, UUID fileId);
     public File save(MultipartFile rawFile, Map<String, String> fileNames);
     public File save(UUID folderId, MultipartFile rawFile, Map<String, String> fileNames);
 }

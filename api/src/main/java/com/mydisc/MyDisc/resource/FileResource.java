@@ -1,9 +1,9 @@
 package com.mydisc.MyDisc.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mydisc.MyDisc.controller.FileController;
 import com.mydisc.MyDisc.controller.FolderController;
 import com.mydisc.MyDisc.entity.File;
-import com.mydisc.MyDisc.entity.Folder;
 import org.springframework.hateoas.ResourceSupport;
 
 import java.util.Map;
@@ -22,13 +22,16 @@ public class FileResource extends ResourceSupport {
 
         UUID id = file.getId();
 
-        add(linkTo(methodOn(FolderController.class).get(id)).withSelfRel());
 
-        if (null == file.getFolder()) {
-            add(linkTo(methodOn(FolderController.class).get()).withRel("folder"));
-        } else {
+        if (this.hasFolder(file)) {
+            add(linkTo(methodOn(FileController.class).get(file.getFolder().getId(), id)).withSelfRel());
             add(linkTo(methodOn(FolderController.class).get(file.getId())).withRel("folder"));
+        } else {
+            add(linkTo(methodOn(FileController.class).get(id)).withSelfRel());
+            add(linkTo(methodOn(FolderController.class).get()).withRel("folder"));
         }
+
+        add(linkTo(methodOn(FileController.class).download(file.getId())).withRel("download"));
     }
 
     @JsonProperty("file")
@@ -38,5 +41,12 @@ public class FileResource extends ResourceSupport {
 
     public void setBody(Map<String, String> body) {
         this.body = body;
+    }
+
+    private boolean hasFolder(File file) {
+        if (null == file.getFolder()) {
+            return false;
+        }
+        return true;
     }
 }

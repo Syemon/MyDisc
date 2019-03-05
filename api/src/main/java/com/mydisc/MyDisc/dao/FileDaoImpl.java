@@ -2,7 +2,6 @@ package com.mydisc.MyDisc.dao;
 
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.Folder;
-import com.mydisc.MyDisc.entity.FolderPojo;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +23,28 @@ public class FileDaoImpl implements FileDao {
     @Autowired
     public FileDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    public File findById(UUID fileId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        return session.get(File.class, fileId);
+    }
+
+    @Override
+    public File findById(UUID folderId, UUID fileId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query<File> query =
+                session.createQuery(
+                        "SELECT fi FROM File AS fi \n" +
+                                "INNER JOIN fi.folder AS fo \n" +
+                                "WHERE fo.id = :folderId", File.class);
+
+        query.setParameter("folderId", folderId);
+
+        return query.getSingleResult();
     }
 
     @Override
