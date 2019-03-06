@@ -14,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -53,7 +51,8 @@ public class FolderControllerTests {
                 .andExpect(jsonPath("folder.name").value("folder"))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
-                .andExpect(jsonPath( "_links.parent").doesNotExist());
+                .andExpect(jsonPath( "_links.parent").doesNotExist())
+                .andExpect(jsonPath( "_links.files").exists());
     }
 
     @Test
@@ -107,8 +106,8 @@ public class FolderControllerTests {
                 .andExpect(jsonPath("folder.name").value(newName))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
-                .andExpect(jsonPath( "_links.parent").doesNotExist());
-
+                .andExpect(jsonPath( "_links.parent").doesNotExist())
+                .andExpect(jsonPath( "_links.files").exists());
 
         Session session = entityManager.unwrap(Session.class);
         Folder renamedFolder = session.get(Folder.class, folderId);
@@ -192,13 +191,12 @@ public class FolderControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith("application/hal+json"))
-
-
                 .andExpect(jsonPath("folder.id").value(folder.getId().toString()))
                 .andExpect(jsonPath("folder.name").value(name))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
-                .andExpect(jsonPath( "_links.parent").doesNotExist());
+                .andExpect(jsonPath( "_links.parent").doesNotExist())
+                .andExpect(jsonPath( "_links.files").exists());
     }
 
     @Test
@@ -213,7 +211,8 @@ public class FolderControllerTests {
                 .andExpect(jsonPath("folder.name").value(name))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
-                .andExpect(jsonPath( "_links.parent").doesNotExist());
+                .andExpect(jsonPath( "_links.parent").doesNotExist())
+                .andExpect(jsonPath( "_links.files").exists());
     }
 
     @Parameterized.Parameters

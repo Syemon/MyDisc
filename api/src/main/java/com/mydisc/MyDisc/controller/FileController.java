@@ -9,12 +9,12 @@ import com.mydisc.MyDisc.service.FolderService;
 import com.mydisc.MyDisc.utils.FileResourceBodyProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -69,6 +69,20 @@ public class FileController {
         }
 
         return fileService.download(fileId);
+    }
+
+    @GetMapping(value = "/folders/root/files", produces = { "application/hal+json" })
+    public ResponseEntity<Resources<FileResource>> list() {
+        Resources<FileResource> resources = fileService.list();
+
+        return ResponseEntity.ok(resources);
+    }
+
+    @GetMapping(value = "/folders/{folderId}/files", produces = { "application/hal+json" })
+    public ResponseEntity<Resources<FileResource>> list(@PathVariable("folderId") UUID folderId) {
+        Resources<FileResource> resources = fileService.list(folderId);
+
+        return ResponseEntity.ok(resources);
     }
 
     @PostMapping(value = "/folders/root/files", produces = { "application/hal+json" })

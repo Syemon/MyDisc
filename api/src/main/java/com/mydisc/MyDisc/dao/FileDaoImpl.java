@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,6 +46,33 @@ public class FileDaoImpl implements FileDao {
         query.setParameter("folderId", folderId);
 
         return query.getSingleResult();
+    }
+
+    @Override
+    public List<File> list() {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query<File> query =
+                session.createQuery(
+                        "SELECT f FROM File AS f \n" +
+                                "WHERE f.folder IS NULL", File.class);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<File> list(UUID folderId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query<File> query =
+                session.createQuery(
+                        "SELECT fi FROM File AS fi \n" +
+                                "INNER JOIN fi.folder AS fo \n" +
+                                "WHERE fo.id = :folderId", File.class);
+
+        query.setParameter("folderId", folderId);
+
+        return query.getResultList();
     }
 
     @Override

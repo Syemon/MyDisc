@@ -1,9 +1,12 @@
 package com.mydisc.MyDisc.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.dao.FileDao;
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.resource.FileResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -46,6 +48,35 @@ public class FileServiceImpl implements FileService {
     @Transactional
     public File findById(UUID folderId, UUID fileId) {
         return fileDao.findById(folderId, fileId);
+    }
+
+    @Override
+    public Resources<FileResource> list() {
+        List<File> files = fileDao.list();
+
+        return getFileResources(files);
+    }
+
+    @Override
+    public Resources<FileResource> list(UUID folderId) {
+        List<File> files = fileDao.list(folderId);
+
+        return getFileResources(files);
+    }
+
+    private Resources<FileResource> getFileResources(List<File> files) {
+        List<FileResource> fileResources = new ArrayList<>();
+
+        for (File file : files) {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> body = new HashMap<>();
+            body.put("name", file.getName());
+            body.put("type", file.getType());
+
+            fileResources.add(new FileResource(file, body));
+        }
+
+        return new Resources<>(fileResources);
     }
 
     @Override

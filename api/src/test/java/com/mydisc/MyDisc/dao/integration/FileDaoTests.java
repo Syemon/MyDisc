@@ -14,6 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MyDiscApplication.class)
@@ -40,6 +42,82 @@ public class FileDaoTests {
         File resultFile = this.fileDao.findById(folder.getId(), file.getId());
 
         Assert.assertEquals(file, resultFile);
+    }
+
+    @Test
+    @Transactional
+    public void testList_LocatedInTheRootFolder() throws Exception {
+        List<File> expectedFiles = new ArrayList<>();
+
+        File file1 = this.getFile();
+        File file2 = this.getFile();
+
+        expectedFiles.add(file1);
+        expectedFiles.add(file2);
+
+        List<File> resultFiles = this.fileDao.list();
+
+        Assert.assertEquals(expectedFiles, resultFiles);
+    }
+
+    @Test
+    @Transactional
+    public void testList_LocatedInTheRootFolder_WhenFilesAreOnlyInADifferentFolder() throws Exception {
+        List<File> expectedFiles = new ArrayList<>();
+        Folder folder = this.getFolder("folder");
+
+        Session session = entityManager.unwrap(Session.class);
+
+        File file1 = this.getFile();
+        File file2 = this.getFile();
+        file1.setFolder(folder);
+        file2.setFolder(folder);
+        session.persist(file1);
+        session.persist(file2);
+        session.flush();
+
+        List<File> resultFiles = this.fileDao.list();
+
+        Assert.assertEquals(expectedFiles, resultFiles);
+    }
+
+    @Test
+    @Transactional
+    public void testList_LocatedInSomeFolder() throws Exception {
+        List<File> expectedFiles = new ArrayList<>();
+        Folder folder = this.getFolder("folder");
+
+        Session session = entityManager.unwrap(Session.class);
+
+        File file1 = this.getFile();
+        File file2 = this.getFile();
+        file1.setFolder(folder);
+        file2.setFolder(folder);
+
+        session.persist(file1);
+        session.persist(file2);
+        session.flush();
+
+        expectedFiles.add(file1);
+        expectedFiles.add(file2);
+
+        List<File> resultFiles = this.fileDao.list(folder.getId());
+
+        Assert.assertEquals(expectedFiles, resultFiles);
+    }
+
+    @Test
+    @Transactional
+    public void testList_LocatedInSomeFolder_WhenFilesAreOnlyInTheRoot() throws Exception {
+        List<File> expectedFiles = new ArrayList<>();
+        Folder folder = this.getFolder("folder");
+
+        File file1 = this.getFile();
+        File file2 = this.getFile();
+
+        List<File> resultFiles = this.fileDao.list(folder.getId());
+
+        Assert.assertEquals(expectedFiles, resultFiles);
     }
 
     @Transactional
