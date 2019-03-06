@@ -41,9 +41,10 @@ public class FileDaoImpl implements FileDao {
                 session.createQuery(
                         "SELECT fi FROM File AS fi \n" +
                                 "INNER JOIN fi.folder AS fo \n" +
-                                "WHERE fo.id = :folderId", File.class);
+                                "WHERE fo.id = :folderId AND fi.id = :fileId", File.class);
 
         query.setParameter("folderId", folderId);
+        query.setParameter("fileId", fileId);
 
         return query.getSingleResult();
     }
