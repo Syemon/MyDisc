@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  db:
+    container_name: mysql_container
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'mydisc'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: '123'
+      MYSQL_ROOT_PASSWORD: '123'
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./api/db:/var/lib/mysql
+    restart: always
+
+  api:
+    build: ./api
+#      - ./api:/api/tmp
+    ports:
+      - 8080:8080
+    command: bash ./api/wait-for-it.sh db:3306
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db/mydisc?verifyServerCertificate=false&useSSL=false&requireSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=123
+    depends_on:
+      - db

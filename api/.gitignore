@@ -25,3 +25,4 @@ gradlew
 *.attach*
 test_uploads
 uploads
+db
