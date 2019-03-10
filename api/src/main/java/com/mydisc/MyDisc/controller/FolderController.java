@@ -24,25 +24,6 @@ public class FolderController {
         this.folderService = folderService;
     }
 
-    @GetMapping(value = "/folders", produces = { "application/hal+json" })
-    public ResponseEntity<Resources<FolderResource>> list() {
-        List<Folder> folders = folderService.findAll();
-
-        List<FolderResource> folderResources = new ArrayList<>();
-
-        for (Folder folder : folders) {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> body = new HashMap<>();
-            body.put("name", folder.getName());
-
-            folderResources.add(new FolderResource(folder, body));
-        }
-
-        Resources<FolderResource> resources = new Resources<>(folderResources);
-
-        return ResponseEntity.ok(resources);
-    }
-
     @GetMapping(value = "/folders/root/children", produces = { "application/hal+json" })
     public ResponseEntity<Resources<FolderResource>> listChildren() {
         List<Folder> folders = folderService.findChildren();

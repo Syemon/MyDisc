@@ -116,15 +116,6 @@ public class FolderControllerTests {
     }
 
     @Test
-    public void testListWithNoCreatedFolders() throws Exception {
-        this.mockMvc.perform(get("/api/folders"))
-                .andExpect(status().isOk())
-                .andExpect(
-                        content().contentTypeCompatibleWith("application/hal+json"))
-                .andExpect(content().json("{}"));
-    }
-
-    @Test
     @Transactional
     public void testList() throws Exception {
         String parentName = "parent";
