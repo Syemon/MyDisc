@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 
@@ -14,22 +15,22 @@ import java.util.List;
 public class ApiExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ApiErrorResponse> handleException(Exception exc) {
-        ApiErrorResponse error = new ApiErrorResponse();
-
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage(exc.getMessage() + "ake lipa:(( +" +exc.toString());
-        error.setTimestamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
     public ResponseEntity<ApiErrorResponse> handleException(FolderNotFoundException exc) {
         ApiErrorResponse error = new ApiErrorResponse();
 
         error.setStatus(HttpStatus.NOT_FOUND.value());
-        error.setMessage(exc.getMessage() + "ake lipa:(((");
+        error.setMessage(exc.getMessage());
+        error.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiErrorResponse> handleException(FileNotFoundException exc) {
+        ApiErrorResponse error = new ApiErrorResponse();
+
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setMessage(exc.getMessage());
         error.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -44,6 +45,28 @@ public class ApiExceptionHandler {
 
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setMessage(fieldErrors.toString());
+        error.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiErrorResponse> handleException(MethodArgumentTypeMismatchException exc) {
+        ApiErrorResponse error = new ApiErrorResponse();
+
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage("Parameter " + "\"" + exc.getName() + "\" is incorrect");
+        error.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiErrorResponse> handleException(Exception exc) {
+        ApiErrorResponse error = new ApiErrorResponse();
+
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(exc.getMessage() + exc.toString());
         error.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
