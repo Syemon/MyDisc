@@ -72,12 +72,10 @@ public class FolderController {
 
     @GetMapping("/folders/{folderId}")
     public FolderResource get(@PathVariable UUID folderId) {
-        try {
-            folderService.findById(folderId);
-        } catch (Exception exception) {
+        Folder folder = folderService.findById(folderId);
+        if (null == folder) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
-        Folder folder = folderService.findById(folderId);
 
         Map<String, String> body = new HashMap<>();
         body.put("id", folder.getId().toString());
@@ -116,11 +114,11 @@ public class FolderController {
 
     @DeleteMapping("/folders/{folderId}")
     public ResponseEntity delete(@PathVariable UUID folderId) {
-        try {
-            folderService.findById(folderId);
-        } catch (Exception exc) {
+        Folder folder = folderService.findById(folderId);
+        if (null == folder) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
+
         folderService.delete(folderId);
 
         return ResponseEntity.noContent().build();

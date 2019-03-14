@@ -7,7 +7,6 @@ import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +29,7 @@ public class FolderControllerTests {
 
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, String> body = new HashMap<>();
+    enum Type {DELETE, GET_SINGLE, UPDATE, ADD};
 
     @Autowired
     private EntityManager entityManager;
@@ -206,27 +206,31 @@ public class FolderControllerTests {
                 .andExpect(jsonPath( "_links.files").exists());
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "Lorem", 0 },
-                { 123, 1 },
-                { "b40f2063-2921-4599-abdd-6469199bc548", 2 }
-        });
-    }
-
-    @Parameterized.Parameter
-    public int input;
-
-    @Parameterized.Parameter(1)
-    public int expected;
-
     @Test
-    public void testGetIdValidation() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}", input))
+    public void testGetValidation_WithStringParameter() throws Exception {
+        this.mockMvc.perform(get("/api/folders/{serviceId}", "Lorem"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("Parameter \"folderId\" is incorrect"));
+    }
+
+    @Test
+    public void testGetValidation_WithIntegergParameter() throws Exception {
+        this.mockMvc.perform(get("/api/folders/{serviceId}", 123))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("Parameter \"folderId\" is incorrect"));
+    }
+
+    @Test
+    public void testGetValidation_WhenIdNotExists() throws Exception {
+        this.mockMvc.perform(get("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("Not found - 4555c2c6-5024-40cf-b15b-24548973cc14"));
     }
 
     @Transactional
