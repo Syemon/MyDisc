@@ -32,7 +32,7 @@ public class FolderDaoTests {
 
     @Test
     @Transactional
-    public void testFindChildrenOfRoot() throws Exception {
+    public void testFindChildrenOfRoot() {
         List<Folder> expectedFolders = new ArrayList<>();
         Session session = entityManager.unwrap(Session.class);
         Folder parent = this.getFolder("parent");
@@ -53,7 +53,7 @@ public class FolderDaoTests {
 
     @Test
     @Transactional
-    public void testFindChildren() throws Exception {
+    public void testFindChildren() {
         List<Folder> expectedFolders = new ArrayList<>();
         Session session = entityManager.unwrap(Session.class);
         Folder parent = this.getFolder("parent");

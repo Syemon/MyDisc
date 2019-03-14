@@ -29,7 +29,7 @@ public class FileDaoTests {
 
     @Test
     @Transactional
-    public void testFindById() throws Exception {
+    public void testFindById() {
         Session session = entityManager.unwrap(Session.class);
         Folder folder = this.getFolder("folder");
 
@@ -46,7 +46,7 @@ public class FileDaoTests {
 
     @Test
     @Transactional
-    public void testList_LocatedInTheRootFolder() throws Exception {
+    public void testList_LocatedInTheRootFolder() {
         List<File> expectedFiles = new ArrayList<>();
 
         File file1 = this.getFile();
@@ -62,7 +62,7 @@ public class FileDaoTests {
 
     @Test
     @Transactional
-    public void testList_LocatedInTheRootFolder_WhenFilesAreOnlyInADifferentFolder() throws Exception {
+    public void testList_LocatedInTheRootFolder_WhenFilesAreOnlyInADifferentFolder() {
         List<File> expectedFiles = new ArrayList<>();
         Folder folder = this.getFolder("folder");
 
@@ -83,7 +83,7 @@ public class FileDaoTests {
 
     @Test
     @Transactional
-    public void testList_LocatedInSomeFolder() throws Exception {
+    public void testList_LocatedInSomeFolder() {
         List<File> expectedFiles = new ArrayList<>();
         Folder folder = this.getFolder("folder");
 
@@ -108,7 +108,7 @@ public class FileDaoTests {
 
     @Test
     @Transactional
-    public void testList_LocatedInSomeFolder_WhenFilesAreOnlyInTheRoot() throws Exception {
+    public void testList_LocatedInSomeFolder_WhenFilesAreOnlyInTheRoot() {
         List<File> expectedFiles = new ArrayList<>();
         Folder folder = this.getFolder("folder");
 
