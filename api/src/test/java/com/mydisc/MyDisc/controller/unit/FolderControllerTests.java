@@ -89,6 +89,15 @@ public class FolderControllerTests {
     }
 
     @Test
+    public void testListChildrenValidation_WhenIdNotExists() throws Exception {
+        this.mockMvc.perform(get("/api/folders/{serviceId}/children", "4555c2c6-5024-40cf-b15b-24548973cc14"))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("Not found - 4555c2c6-5024-40cf-b15b-24548973cc14"));
+    }
+
+    @Test
     public void testRenameValidation_WhenIdNotExists() throws Exception {
         this.body = new HashMap<>();
         this.body.put("name", "New Name");

@@ -45,6 +45,11 @@ public class FolderController {
 
     @GetMapping(value = "/folders/{folderId}/children", produces = { "application/hal+json" })
     public ResponseEntity<Resources<FolderResource>> listChildren(@PathVariable UUID folderId) {
+        Folder targetFolder = folderService.findById(folderId);
+        if (null == targetFolder) {
+            throw new FolderNotFoundException("Not found - " + folderId);
+        }
+
         List<Folder> folders = folderService.findChildren(folderId);
 
         List<FolderResource> folderResources = new ArrayList<>();
