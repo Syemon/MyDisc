@@ -216,7 +216,7 @@ public class FolderControllerTests {
     }
 
     @Test
-    public void testGetValidation_WithIntegergParameter() throws Exception {
+    public void testGetValidation_WithIntegerParameter() throws Exception {
         this.mockMvc.perform(get("/api/folders/{serviceId}", 123))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
