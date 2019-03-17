@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.entity.FolderPojo;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
+import com.mydisc.MyDisc.exception.RequiredParameterException;
 import com.mydisc.MyDisc.resource.FolderResource;
 import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,10 +98,12 @@ public class FolderController {
 
     @PatchMapping(value = "/folders/{folderId}", produces = { "application/hal+json" })
     public FolderResource rename(@PathVariable UUID folderId, @RequestBody FolderPojo folderPojo) {
-        try {
-            folderService.findById(folderId);
-        } catch (Exception exc) {
+        Folder targetFolder = folderService.findById(folderId);
+        if (null == targetFolder) {
             throw new FolderNotFoundException("Not found - " + folderId);
+        }
+        if (null == folderPojo.getName()) {
+            throw new RequiredParameterException("Name is required");
         }
 
         folderPojo.setId(folderId);

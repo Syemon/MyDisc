@@ -206,33 +206,6 @@ public class FolderControllerTests {
                 .andExpect(jsonPath( "_links.files").exists());
     }
 
-    @Test
-    public void testGetValidation_WithStringParameter() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}", "Lorem"))
-                .andExpect(
-                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message").value("Parameter \"folderId\" is incorrect"));
-    }
-
-    @Test
-    public void testGetValidation_WithIntegerParameter() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}", 123))
-                .andExpect(
-                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message").value("Parameter \"folderId\" is incorrect"));
-    }
-
-    @Test
-    public void testGetValidation_WhenIdNotExists() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
-                .andExpect(
-                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - 4555c2c6-5024-40cf-b15b-24548973cc14"));
-    }
-
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
