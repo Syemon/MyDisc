@@ -33,12 +33,13 @@ services:
     container_name: client_container
     build:
       context: ./client/
-#      dockerfile: Dockerfile
+      dockerfile: Dockerfile
     volumes:
-      - './client:/usr/src/app'
-      - '/usr/src/client/node_modules'
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - '80:3000'
+    command: npm start
     environment:
       - NODE_ENV=development
     depends_on:
