@@ -1,6 +1,7 @@
 package com.mydisc.MyDisc.dao;
 
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.entity.Folder;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -108,5 +109,15 @@ public class FileDaoImpl implements FileDao {
         session.flush();
 
         return file;
+    }
+
+    @Override
+    public void move(UUID fileId, FilePojo filePojo) {
+
+    }
+
+    @Override
+    public void move(UUID folderId, UUID fileId, FilePojo filePojo) {
+
     }
 }

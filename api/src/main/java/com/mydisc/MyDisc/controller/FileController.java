@@ -1,6 +1,8 @@
 package com.mydisc.MyDisc.controller;
 
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.entity.FilePojo;
+import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.exception.FileNotFoundException;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
 import com.mydisc.MyDisc.resource.FileResource;
@@ -10,10 +12,12 @@ import com.mydisc.MyDisc.utils.FileResourceBodyProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -99,5 +103,41 @@ public class FileController {
         Map<String, String> body = FileResourceBodyProcessor.getFullFileBody(resultFile);
 
         return new FileResource(resultFile, body);
+    }
+
+    @PutMapping(value = "/folders/root/files/{fileId}/move")
+    public ResponseEntity moveFile(
+            @PathVariable("fileId") UUID fileId,
+            @Valid @RequestBody FilePojo filePojo
+    ) {
+        File file = fileService.findById(fileId);
+        if (null == file) {
+            throw new FileNotFoundException("File was not found");
+        }
+
+        fileService.move(fileId, filePojo);
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
+    }
+
+    @PutMapping(value = "/folders/{folderId}/files/{fileId}/move")
+    public ResponseEntity moveFile(
+            @PathVariable("folderId") UUID folderId,
+            @PathVariable("folderId") UUID fileId,
+            @Valid @RequestBody FilePojo filePojo
+    ) {
+        Folder folder = folderService.findById(folderId);
+        if (null == folder) {
+            throw new FolderNotFoundException("Not found - " + folderId);
+        }
+
+        File file = fileService.findById(folderId, fileId);
+        if (null == file) {
+            throw new FileNotFoundException("File was not found");
+        }
+
+        fileService.move(folderId, fileId, filePojo);
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
     }
 }

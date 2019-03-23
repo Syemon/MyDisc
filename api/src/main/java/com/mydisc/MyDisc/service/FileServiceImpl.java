@@ -3,6 +3,7 @@ package com.mydisc.MyDisc.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.dao.FileDao;
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.resource.FileResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -93,5 +94,17 @@ public class FileServiceImpl implements FileService {
         Map<String, String> fileNames = fileStorageService.storeFile(rawFile);
 
         return fileDao.save(folderId, rawFile, fileNames);
+    }
+
+    @Override
+    @Transactional
+    public void move(UUID fileId, FilePojo filePojo) {
+        fileDao.move(fileId, filePojo);
+    }
+
+    @Override
+    @Transactional
+    public void move(UUID folderId, UUID fileId, FilePojo filePojo) {
+        fileDao.move(folderId, fileId, filePojo);
     }
 }

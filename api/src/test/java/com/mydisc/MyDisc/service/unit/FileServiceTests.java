@@ -2,6 +2,7 @@ package com.mydisc.MyDisc.service.unit;
 
 import com.mydisc.MyDisc.dao.FileDao;
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.resource.FileResource;
 import com.mydisc.MyDisc.service.FileService;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(FileService.class)
@@ -118,5 +119,20 @@ public class FileServiceTests {
         for (FileResource fileResource: resources) {
             assertFalse(fileResource.hasLinks());
         }
+    }
+
+    @Test
+    public void testMove_FromRootFolder() {
+        this.fileService.move(UUID.randomUUID(), mock(FilePojo.class));
+
+        verify(this.fileDao, times(1)).move(any(UUID.class),any(FilePojo.class));
+    }
+
+    @Test
+    public void testMove() {
+        this.fileService.move(UUID.randomUUID(), UUID.randomUUID(), mock(FilePojo.class));
+
+        verify(this.fileDao, times(1)).move(
+                any(UUID.class), any(UUID.class), any(FilePojo.class));
     }
 }

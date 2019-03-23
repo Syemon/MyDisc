@@ -1,6 +1,7 @@
 package com.mydisc.MyDisc.service;
 
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.resource.FileResource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
@@ -16,4 +17,6 @@ public interface FileService {
     public Resources<FileResource> list(UUID folderId);
     public File upload(MultipartFile file);
     public File upload(UUID folderId, MultipartFile file);
+    public void move(UUID fileId, FilePojo filePojo);
+    public void move(UUID folderId, UUID fileId, FilePojo filePojo);
 }

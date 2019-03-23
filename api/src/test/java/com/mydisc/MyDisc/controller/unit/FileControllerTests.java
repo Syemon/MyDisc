@@ -1,7 +1,9 @@
 package com.mydisc.MyDisc.controller.unit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.controller.FileController;
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.service.FileService;
 import com.mydisc.MyDisc.service.FolderService;
@@ -20,10 +22,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -48,6 +52,10 @@ public class FileControllerTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    private Map<String, String> body;
+
+    private ObjectMapper mapper = new ObjectMapper();
+
     @Before
     public void setFile() {
         when(this.file.getId()).thenReturn(UUID.randomUUID());
@@ -55,6 +63,11 @@ public class FileControllerTests {
         when(this.file.getSize()).thenReturn(12313L);
         when(this.file.getStorageName()).thenReturn("1234567890ABCDEF");
         when(this.file.getType()).thenReturn("text/plain");
+    }
+
+    @Before
+    public void setFolder() {
+        when(this.folder.getId()).thenReturn(UUID.randomUUID());
     }
 
     @Test
@@ -156,5 +169,114 @@ public class FileControllerTests {
                 .andExpect(jsonPath( "_links.folder").exists())
                 .andExpect(jsonPath( "_links.folder.href").exists())
                 .andExpect(jsonPath( "_links.download.href").exists());
+    }
+
+    @Test
+    public void testMove_ValidateWithNotExistFolder() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+        this.body = new HashMap<>();
+        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.put(
+                "/api/folders/{folderId}/files/{fileId}/move",
+                "dad3cfda-5124-4389-b5c2-2433a380cc49", this.file.getId())
+                .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+    }
+
+    @Test
+    public void testMove_ValidateWithNotExistFile() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(null);
+
+        this.body = new HashMap<>();
+        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.put(
+                "/api/folders/{folderId}/files/{fileId}/move",
+                this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49")
+                .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("File was not found"));
+    }
+
+    @Test
+    public void testMove_ValidateWithoutBody() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.put(
+                "/api/folders/{folderId}/files/{fileId}/move",
+                this.folder.getId(), this.file.getId()))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("Data is required"));
+    }
+
+    @Test
+    public void testMove_ValidateWithNullFolderIdInBody() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.put(
+                "/api/folders/{folderId}/files/{fileId}/move",
+                this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49"))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("Data is required"));
+    }
+
+    @Test
+    public void testMove() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
+
+        this.body = new HashMap<>();
+        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.put(
+                "/api/folders/{folderId}/files/{fileId}/move",
+                UUID.randomUUID().toString(), UUID.randomUUID().toString())
+                .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(
+                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        verify(this.fileService, times(1)).move(
+                any(UUID.class), any(UUID.class), any(FilePojo.class));
+    }
+
+    @Test
+    public void testMove_FromRootFolder() throws Exception {
+        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
+
+        this.body = new HashMap<>();
+        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        this.mockMvc.perform(MockMvcRequestBuilders.put(
+                "/api/folders/root/files/{fileId}/move",
+                UUID.randomUUID().toString())
+                .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(
+                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        verify(this.fileService, times(1)).move(
+                any(UUID.class), any(FilePojo.class));
     }
 }
