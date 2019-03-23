@@ -12,6 +12,10 @@ public class UuidValidator implements ConstraintValidator<UuidConstraint, String
 
     @Override
     public boolean isValid(String uuid, ConstraintValidatorContext context) {
+        if (null == uuid) {
+            return true;
+        }
+
         Pattern pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
         return pattern.matcher(uuid).matches();
     }
