@@ -63,12 +63,12 @@ public class FolderServiceImpl implements FolderService{
     @Override
     @Transactional
     public void move(UUID folderId) {
-
+        this.folderDao.move(folderId);
     }
 
     @Override
     @Transactional
     public void move(UUID folderId, UUID targetFolderId) {
-
+        this.folderDao.move(folderId, targetFolderId);
     }
 }

@@ -22,4 +22,8 @@ public interface FolderDao {
     List<Folder> findChildren();
 
     List<Folder> findChildren(UUID folderId);
+
+    void move(UUID folderId);
+
+    void move(UUID folderId, UUID targetFolderId);
 }

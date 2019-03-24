@@ -104,4 +104,14 @@ public class FolderDaoImpl implements FolderDao {
         query.setParameter("folderId", id)
                 .executeUpdate();
     }
+
+    @Override
+    public void move(UUID folderId) {
+
+    }
+
+    @Override
+    public void move(UUID folderId, UUID targetFolderId) {
+
+    }
 }
