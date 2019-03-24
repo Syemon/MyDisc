@@ -59,4 +59,16 @@ public class FolderServiceImpl implements FolderService{
     public void delete(UUID id) {
         this.folderDao.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public void move(UUID folderId) {
+
+    }
+
+    @Override
+    @Transactional
+    public void move(UUID folderId, UUID targetFolderId) {
+
+    }
 }

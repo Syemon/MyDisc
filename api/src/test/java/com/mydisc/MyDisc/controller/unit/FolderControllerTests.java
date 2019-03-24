@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -138,5 +138,75 @@ public class FolderControllerTests {
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("message").value("Name is required"));
+    }
+
+    @Test
+    public void testMove_ToRoot_ValidateWithNotExistFolder() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+
+        this.mockMvc.perform(patch(
+                "/api/folders/{folderId}/move/root",
+                "dad3cfda-5124-4389-b5c2-2433a380cc49"))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+    }
+
+    @Test
+    public void testMove_ToAnotherFolder_ValidateWithNotExistFolder() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+
+        this.mockMvc.perform(patch(
+                "/api/folders/{folderId}/move/{targetFolderId}",
+                "dad3cfda-5124-4389-b5c2-2433a380cc49", "333e1f7f-a06e-413f-a137-35d2b0c7d4c8"))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+    }
+
+    @Test
+    public void testMove_ToAnotherFolder_ValidateWithNotExistTargetFolder() throws Exception {
+        UUID folderId = UUID.fromString("333e1f7f-a06e-413f-a137-35d2b0c7d4c8");
+        UUID targetFolderId = UUID.fromString("dad3cfda-5124-4389-b5c2-2433a380cc49");
+
+        when(this.folderService.findById(folderId)).thenReturn(this.folder);
+        when(this.folderService.findById(targetFolderId)).thenReturn(null);
+
+        this.mockMvc.perform(patch(
+                "/api/folders/{folderId}/move/{targetFolderId}",
+                folderId.toString(), targetFolderId.toString()))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("Not found - " + targetFolderId.toString()));
+    }
+
+    @Test
+    public void testMove_ToAnotherFolder() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+
+        this.mockMvc.perform(patch(
+                "/api/folders/{folderId}/move/{targetFolderId}",
+                UUID.randomUUID().toString(), UUID.randomUUID().toString()))
+                .andExpect(status().isOk()).andExpect(
+                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        verify(this.folderService, times(1)).move(
+                any(UUID.class), any(UUID.class));
+    }
+
+    @Test
+    public void testMove_ToRootFolder() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+
+        this.mockMvc.perform(patch(
+                "/api/folders/{folderId}/move/root",
+                UUID.randomUUID().toString()))
+                .andExpect(status().isOk()).andExpect(
+                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        verify(this.folderService, times(1)).move(any(UUID.class));
     }
 }

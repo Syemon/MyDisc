@@ -20,4 +20,8 @@ public interface FolderService {
     public List<Folder> findChildren();
 
     public List<Folder> findChildren(UUID folderId);
+
+    void move(UUID folderId);
+
+    void move(UUID folderId, UUID targetFolderId);
 }

@@ -1,14 +1,14 @@
 package com.mydisc.MyDisc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mydisc.MyDisc.entity.Folder;
-import com.mydisc.MyDisc.entity.FolderPojo;
+import com.mydisc.MyDisc.entity.*;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
 import com.mydisc.MyDisc.exception.RequiredParameterException;
 import com.mydisc.MyDisc.resource.FolderResource;
 import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -130,5 +130,37 @@ public class FolderController {
         folderService.delete(folderId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/folders/{folderId}/move/root")
+    public ResponseEntity moveFile(@PathVariable("folderId") UUID folderId) {
+        Folder folder = folderService.findById(folderId);
+        if (null == folder) {
+            throw new FolderNotFoundException("Not found - " + folderId);
+        }
+
+        folderService.move(folderId);
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
+    }
+
+    @PatchMapping(value = "/folders/{folderId}/move/{targetFolderId}")
+    public ResponseEntity moveFile(
+            @PathVariable("folderId") UUID folderId,
+            @PathVariable("targetFolderId") UUID targetFolderId
+    ) {
+        Folder folder = folderService.findById(folderId);
+        if (null == folder) {
+            throw new FolderNotFoundException("Not found - " + folderId);
+        }
+
+        Folder targetFolder = folderService.findById(targetFolderId);
+        if (null == targetFolder) {
+            throw new FolderNotFoundException("Not found - " + targetFolderId);
+        }
+
+        folderService.move(folderId, targetFolderId);
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
     }
 }
