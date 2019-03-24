@@ -73,12 +73,74 @@ public class FolderDaoTests {
         Assert.assertEquals(expectedFolders, folders);
     }
 
+    @Test
+    @Transactional
+    public void testMove_FromAnotherFolderToRoot() {
+        Session session = entityManager.unwrap(Session.class);
+
+        Folder folder = this.getFolder("folder");
+        Folder parentFolder = this.getFolder("parentFolder");
+        folder.setParent(parentFolder);
+        session.persist(folder);
+        session.persist(parentFolder);
+        session.flush();
+
+        Assert.assertEquals(folder.getParent(), parentFolder);
+        Assert.assertTrue(parentFolder.getChildren().contains(folder));
+
+        this.folderDao.move(folder.getId());
+
+        session.persist(folder);
+        session.persist(parentFolder);
+        session.flush();
+
+        session.refresh(folder);
+        session.refresh(parentFolder);
+
+        Assert.assertNull(folder.getParent());
+        Assert.assertFalse(parentFolder.getChildren().contains(folder));
+    }
+
+    @Test
+    @Transactional
+    public void testMove_FromAnotherFolderToAnotherFolder() {
+        Session session = entityManager.unwrap(Session.class);
+
+        Folder folder = this.getFolder("folder");
+        Folder parentFolder = this.getFolder("parentFolder");
+        Folder targetFolder = this.getFolder("targetFolder");
+
+        folder.setParent(parentFolder);
+        session.persist(folder);
+        session.persist(parentFolder);
+        session.flush();
+
+        Assert.assertEquals(folder.getParent(), parentFolder);
+        Assert.assertTrue(parentFolder.getChildren().contains(folder));
+
+        this.folderDao.move(folder.getId(), targetFolder.getId());
+
+        session.persist(folder);
+        session.persist(parentFolder);
+        session.persist(targetFolder);
+        session.flush();
+
+        session.refresh(folder);
+        session.refresh(parentFolder);
+        session.refresh(targetFolder);
+
+        Assert.assertEquals(folder.getParent(), targetFolder);
+        Assert.assertFalse(parentFolder.getChildren().contains(folder));
+        Assert.assertTrue(targetFolder.getChildren().contains(folder));
+    }
+
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
         entityManager.unwrap(Session.class);
         entityManager.persist(folder);
         entityManager.flush();
+        entityManager.refresh(folder);
 
         return folder;
     }

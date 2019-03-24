@@ -107,11 +107,32 @@ public class FolderDaoImpl implements FolderDao {
 
     @Override
     public void move(UUID folderId) {
+        Session session = entityManager.unwrap(Session.class);
 
+        Folder folder = session.get(Folder.class, folderId);
+
+        folder.setParent(null);
+
+        session.save(folder);
     }
 
     @Override
     public void move(UUID folderId, UUID targetFolderId) {
+        Session session = entityManager.unwrap(Session.class);
 
+        Folder folder = session.get(Folder.class, folderId);
+        Folder targetFolder = session.get(Folder.class, targetFolderId);
+
+        if (null != folder.getParent()) {
+            Folder parent = folder.getParent();
+            parent.removeChild(folder);
+            session.save(parent);
+        }
+
+        folder.setParent(targetFolder);
+        targetFolder.removeChild(folder);
+
+        session.save(folder);
+        session.save(targetFolder);
     }
 }

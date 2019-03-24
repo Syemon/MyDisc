@@ -1,6 +1,7 @@
 package com.mydisc.MyDisc.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class Folder {
     @JoinColumn(name="parent_id")
     private Folder parent;
 
+    @Nullable
     @OneToMany(mappedBy="parent", cascade={CascadeType.PERSIST, CascadeType.MERGE})
     private List<Folder> children;
 
@@ -53,6 +55,10 @@ public class Folder {
 
     public void setParent(Folder parent) {
         if (parent == null) {
+            if (null != this.parent) {
+                this.parent.removeChild(this);
+            }
+            this.parent = null;
             return;
         }
 
