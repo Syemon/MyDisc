@@ -113,11 +113,31 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public void move(UUID fileId, FilePojo filePojo) {
+        Session session = entityManager.unwrap(Session.class);
 
+        Folder folder = session.get(Folder.class, filePojo.getFolderId());
+        File file = session.get(File.class, fileId);
+        file.setFolder(folder);
+        session.save(file);
     }
 
     @Override
     public void move(UUID folderId, UUID fileId, FilePojo filePojo) {
+        Session session = entityManager.unwrap(Session.class);
 
+        Query<File> query =
+                session.createQuery(
+                        "SELECT f FROM File AS f \n" +
+                                "WHERE f.folder.id = :folderId \n" +
+                                "AND f.id = :fileId", File.class);
+
+        query.setParameter("folderId", folderId);
+        query.setParameter("fileId", fileId);
+
+        File file = query.getSingleResult();
+        Folder folder = session.get(Folder.class, filePojo.getFolderId());
+
+        file.setFolder(folder);
+        session.save(file);
     }
 }

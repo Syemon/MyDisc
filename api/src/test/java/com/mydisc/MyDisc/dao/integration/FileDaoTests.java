@@ -3,6 +3,7 @@ package com.mydisc.MyDisc.dao.integration;
 import com.mydisc.MyDisc.MyDiscApplication;
 import com.mydisc.MyDisc.dao.FileDao;
 import com.mydisc.MyDisc.entity.File;
+import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.entity.Folder;
 import org.hibernate.Session;
 import org.junit.Assert;
@@ -120,12 +121,62 @@ public class FileDaoTests {
         Assert.assertEquals(expectedFiles, resultFiles);
     }
 
+    @Test
+    @Transactional
+    public void testMove_FromRootFolder() {
+        FilePojo filePojo = new FilePojo();
+
+        Session session = entityManager.unwrap(Session.class);
+
+        Folder targetFolder = this.getFolder("targetFolder");
+        File file = this.getFile();
+
+        filePojo.setFolderId(targetFolder.getId());
+
+        this.fileDao.move(file.getId(), filePojo);
+
+        session.persist(file);
+        session.flush();
+
+        session.refresh(file);
+
+        Assert.assertEquals(targetFolder, file.getFolder());
+    }
+
+    @Test
+    @Transactional
+    public void testMove_FromAnotherFolder() {
+        FilePojo filePojo = new FilePojo();
+
+        Session session = entityManager.unwrap(Session.class);
+
+        Folder folder = this.getFolder("folder");
+        Folder targetFolder = this.getFolder("targetFolder");
+        File file = this.getFile();
+
+        file.setFolder(folder);
+        session.persist(folder);
+        session.flush();
+
+        filePojo.setFolderId(targetFolder.getId());
+
+        this.fileDao.move(folder.getId(), file.getId(), filePojo);
+
+        session.persist(file);
+        session.flush();
+
+        session.refresh(file);
+
+        Assert.assertEquals(targetFolder, file.getFolder());
+    }
+
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
         entityManager.unwrap(Session.class);
         entityManager.persist(folder);
         entityManager.flush();
+        entityManager.refresh(folder);
 
         return folder;
     }
@@ -140,6 +191,7 @@ public class FileDaoTests {
         entityManager.unwrap(Session.class);
         entityManager.persist(file);
         entityManager.flush();
+        entityManager.refresh(file);
 
         return file;
     }
