@@ -217,11 +217,11 @@ public class FolderControllerTests {
 
         this.body = new HashMap<>();
         this.body.put("name", "Lorem ipsum");
+        this.body.put("parentId", "dad3cfda-5124-4389-b5c2-2433a380cc49");
         String jsonBody = mapper.writeValueAsString(body);
 
         this.mockMvc.perform(post(
-                "/api/folders/{folderId}",
-                "dad3cfda-5124-4389-b5c2-2433a380cc49")
+                "/api/folders")
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -235,8 +235,7 @@ public class FolderControllerTests {
         when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
 
         this.mockMvc.perform(post(
-                "/api/folders/{folderId}",
-                "dad3cfda-5124-4389-b5c2-2433a380cc49"))
+                "/api/folders"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -246,13 +245,14 @@ public class FolderControllerTests {
     @Test
     public void testCreate_InRoot() throws Exception {
         when(this.folder.getName()).thenReturn("folder");
+        when(this.folder.getId()).thenReturn(UUID.randomUUID());
         when(this.folderService.save(any(FolderPojo.class))).thenReturn(this.folder);
 
         this.body = new HashMap<>();
         this.body.put("name", "folder");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post("/api/folders/root")
+        this.mockMvc.perform(post("/api/folders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())
@@ -267,15 +267,19 @@ public class FolderControllerTests {
 
     @Test
     public void testCreate_InAnotherFolder() throws Exception {
+        Folder folder2 = mock(Folder.class);
         when(this.folder.getName()).thenReturn("folder");
+        when(this.folder.getId()).thenReturn(UUID.randomUUID());
+        when(this.folder.getParent()).thenReturn(folder2);
         when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
-        when(this.folderService.save(any(UUID.class), any(FolderPojo.class))).thenReturn(this.folder);
+        when(this.folderService.save(any(FolderPojo.class))).thenReturn(this.folder);
 
         this.body = new HashMap<>();
         this.body.put("name", "folder");
+        this.body.put("parentId", "dad3cfda-5124-4389-b5c2-2433a380cc49");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post("/api/folders/{folderId}", UUID.randomUUID().toString())
+        this.mockMvc.perform(post("/api/folders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())

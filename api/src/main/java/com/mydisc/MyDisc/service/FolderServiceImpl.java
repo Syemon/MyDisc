@@ -49,11 +49,6 @@ public class FolderServiceImpl implements FolderService{
     }
 
     @Override
-    public Folder save(UUID folderId, FolderPojo folderPojo) {
-        return null;
-    }
-
-    @Override
     @Transactional
     public Folder rename(FolderPojo folderPojo) {
         return this.folderDao.update(folderPojo);

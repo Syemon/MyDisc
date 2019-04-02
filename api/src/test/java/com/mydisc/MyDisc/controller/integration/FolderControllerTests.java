@@ -41,7 +41,7 @@ public class FolderControllerTests {
         this.body.put("name", "folder");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post("/api/folders/root")
+        this.mockMvc.perform(post("/api/folders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())
