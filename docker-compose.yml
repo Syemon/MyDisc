@@ -20,7 +20,7 @@ services:
     build: ./api
 #      - ./api:/api/tmp
     ports:
-      - 8080:80
+      - 8080:8080
     command: bash ./api/wait-for-it.sh db:3306
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db/mydisc?verifyServerCertificate=false&useSSL=false&requireSSL=false&allowPublicKeyRetrieval=true
@@ -29,19 +29,19 @@ services:
     depends_on:
       - db
 
-  client:
-    container_name: client_container
-    build:
-      context: ./client/
-      dockerfile: Dockerfile
-    volumes:
-      - ./client:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - '80:3000'
-    command: npm start
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - api
+#  client:
+#    container_name: client_container
+#    build:
+#      context: ./client/
+#      dockerfile: Dockerfile
+#    volumes:
+#      - ./client:/usr/src/app
+#      - /usr/src/app/node_modules
+#    ports:
+#      - '80:3000'
+#    command: npm start
+#    environment:
+#      - NODE_ENV=development
+#    depends_on:
+#      - api
 
