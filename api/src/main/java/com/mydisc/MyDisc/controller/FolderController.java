@@ -90,10 +90,23 @@ public class FolderController {
         return new FolderResource(folder, body);
     }
 
-
-    @PostMapping(value = "/folders", produces = { "application/hal+json" })
+    @PostMapping(value = "/folders/root", produces = { "application/hal+json" })
     public FolderResource create(@RequestBody FolderPojo folderPojo) {
         Folder folder = folderService.save(folderPojo);
+
+        Map<String, String> body = new HashMap<>();
+        body.put("name", folder.getName());
+
+        return new FolderResource(folder, body);
+    }
+
+    @PostMapping(value = "/folders/{folderId}", produces = { "application/hal+json" })
+    public FolderResource create(@PathVariable UUID folderId, @RequestBody FolderPojo folderPojo) {
+        Folder parent = folderService.findById(folderId);
+        if (null == parent) {
+            throw new FolderNotFoundException("Not found - " + folderId);
+        }
+        Folder folder = folderService.save(folderId, folderPojo);
 
         Map<String, String> body = new HashMap<>();
         body.put("name", folder.getName());

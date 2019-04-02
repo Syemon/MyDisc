@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.controller.FolderController;
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.Folder;
+import com.mydisc.MyDisc.entity.FolderPojo;
 import com.mydisc.MyDisc.service.FileService;
 import com.mydisc.MyDisc.service.FolderService;
 import org.junit.Test;
@@ -208,5 +209,82 @@ public class FolderControllerTests {
                 content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
         verify(this.folderService, times(1)).move(any(UUID.class));
+    }
+
+    @Test
+    public void testCreate_InAnotherFolder_ValidateWithNotExistFolder() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+
+        this.body = new HashMap<>();
+        this.body.put("name", "Lorem ipsum");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        this.mockMvc.perform(post(
+                "/api/folders/{folderId}",
+                "dad3cfda-5124-4389-b5c2-2433a380cc49")
+                .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message")
+                        .value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+    }
+
+    @Test
+    public void testCreate_InAnotherFolder_ValidateWithNoBody() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+
+        this.mockMvc.perform(post(
+                "/api/folders/{folderId}",
+                "dad3cfda-5124-4389-b5c2-2433a380cc49"))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("Data is required"));
+    }
+
+    @Test
+    public void testCreate_InRoot() throws Exception {
+        when(this.folder.getName()).thenReturn("folder");
+        when(this.folderService.save(any(FolderPojo.class))).thenReturn(this.folder);
+
+        this.body = new HashMap<>();
+        this.body.put("name", "folder");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        this.mockMvc.perform(post("/api/folders/root")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("folder.name").value("folder"))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.parent").exists())
+                .andExpect(jsonPath( "_links.files").exists());
+    }
+
+    @Test
+    public void testCreate_InAnotherFolder() throws Exception {
+        when(this.folder.getName()).thenReturn("folder");
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.save(any(UUID.class), any(FolderPojo.class))).thenReturn(this.folder);
+
+        this.body = new HashMap<>();
+        this.body.put("name", "folder");
+        String jsonBody = mapper.writeValueAsString(body);
+
+        this.mockMvc.perform(post("/api/folders/{folderId}", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("folder.name").value("folder"))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath( "_links.self.href").exists())
+                .andExpect(jsonPath( "_links.parent").exists())
+                .andExpect(jsonPath( "_links.files").exists());
     }
 }

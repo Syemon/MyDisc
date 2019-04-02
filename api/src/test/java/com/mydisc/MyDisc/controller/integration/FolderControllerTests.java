@@ -29,7 +29,6 @@ public class FolderControllerTests {
 
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, String> body = new HashMap<>();
-    enum Type {DELETE, GET_SINGLE, UPDATE, ADD};
 
     @Autowired
     private EntityManager entityManager;
@@ -42,7 +41,7 @@ public class FolderControllerTests {
         this.body.put("name", "folder");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post("/api/folders")
+        this.mockMvc.perform(post("/api/folders/root")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())
@@ -51,7 +50,7 @@ public class FolderControllerTests {
                 .andExpect(jsonPath("folder.name").value("folder"))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
-                .andExpect(jsonPath( "_links.parent").doesNotExist())
+                .andExpect(jsonPath( "_links.parent").exists())
                 .andExpect(jsonPath( "_links.files").exists());
     }
 
@@ -106,7 +105,7 @@ public class FolderControllerTests {
                 .andExpect(jsonPath("folder.name").value(newName))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
-                .andExpect(jsonPath( "_links.parent").doesNotExist())
+                .andExpect(jsonPath( "_links.parent").exists())
                 .andExpect(jsonPath( "_links.files").exists());
 
         Session session = entityManager.unwrap(Session.class);
@@ -186,7 +185,7 @@ public class FolderControllerTests {
                 .andExpect(jsonPath("folder.name").value(name))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath( "_links.self.href").exists())
-                .andExpect(jsonPath( "_links.parent").doesNotExist())
+                .andExpect(jsonPath( "_links.parent").exists())
                 .andExpect(jsonPath( "_links.files").exists());
     }
 
