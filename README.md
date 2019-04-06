@@ -10,8 +10,13 @@ Enter created project: `cd MyDisc`
 Run docker containers: `docker-compose up`. **It may fail at the first time**.  
     
 ## Documentation
-[MyDisc wiki](https://github.com/Syemon/MyDisc/wiki)
+[MyDisc wiki](https://github.com/Syemon/MyDisc/wiki)  
+[API](https://app.swaggerhub.com/apis-docs/Syemon4/MyDisc/1.0.0) documentation in OpenAPI 3.0  
 
 ## Authors
-* Front-end - [Martyna Szeszko](https://github.com/martyna007)
-* Back-end - [Szymon Linowski](https://github.com/Syemon)
+* Front-end - [Martyna Szeszko](https://github.com/martyna007) 
+
+
+* Back-end - [Szymon Linowski](https://github.com/Syemon) 
+
+
