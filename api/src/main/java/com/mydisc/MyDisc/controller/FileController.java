@@ -105,7 +105,7 @@ public class FileController {
         return new FileResource(resultFile, body);
     }
 
-    @PutMapping(value = "/folders/root/files/{fileId}/move")
+    @PatchMapping(value = "/folders/root/files/{fileId}/move")
     public ResponseEntity moveFile(
             @PathVariable("fileId") UUID fileId,
             @Valid @RequestBody FilePojo filePojo
@@ -120,7 +120,7 @@ public class FileController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
     }
 
-    @PutMapping(value = "/folders/{folderId}/files/{fileId}/move")
+    @PatchMapping(value = "/folders/{folderId}/files/{fileId}/move")
     public ResponseEntity moveFile(
             @PathVariable("folderId") UUID folderId,
             @PathVariable("folderId") UUID fileId,

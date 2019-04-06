@@ -179,7 +179,7 @@ public class FileControllerTests {
         String jsonBody = mapper.writeValueAsString(body);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.mockMvc.perform(MockMvcRequestBuilders.put(
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 "dad3cfda-5124-4389-b5c2-2433a380cc49", this.file.getId())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
@@ -199,7 +199,7 @@ public class FileControllerTests {
         String jsonBody = mapper.writeValueAsString(body);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.mockMvc.perform(MockMvcRequestBuilders.put(
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49")
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
@@ -215,7 +215,7 @@ public class FileControllerTests {
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.mockMvc.perform(MockMvcRequestBuilders.put(
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), this.file.getId()))
                 .andExpect(
@@ -230,7 +230,7 @@ public class FileControllerTests {
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.mockMvc.perform(MockMvcRequestBuilders.put(
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49"))
                 .andExpect(
@@ -249,7 +249,7 @@ public class FileControllerTests {
         String jsonBody = mapper.writeValueAsString(body);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.mockMvc.perform(MockMvcRequestBuilders.put(
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 UUID.randomUUID().toString(), UUID.randomUUID().toString())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
@@ -269,7 +269,7 @@ public class FileControllerTests {
         String jsonBody = mapper.writeValueAsString(body);
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.mockMvc.perform(MockMvcRequestBuilders.put(
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/root/files/{fileId}/move",
                 UUID.randomUUID().toString())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
