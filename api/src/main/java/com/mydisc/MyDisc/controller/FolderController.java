@@ -8,7 +8,6 @@ import com.mydisc.MyDisc.resource.FolderResource;
 import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -148,7 +147,7 @@ public class FolderController {
 
         folderService.move(folderId);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping(value = "/folders/{folderId}/move/{targetFolderId}")
@@ -168,6 +167,6 @@ public class FolderController {
 
         folderService.move(folderId, targetFolderId);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
+        return ResponseEntity.noContent().build();
     }
 }

@@ -12,7 +12,6 @@ import com.mydisc.MyDisc.utils.FileResourceBodyProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -117,7 +116,7 @@ public class FileController {
 
         fileService.move(fileId, filePojo);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping(value = "/folders/{folderId}/files/{fileId}/move")
@@ -138,6 +137,6 @@ public class FileController {
 
         fileService.move(folderId, fileId, filePojo);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
+        return ResponseEntity.noContent().build();
     }
 }

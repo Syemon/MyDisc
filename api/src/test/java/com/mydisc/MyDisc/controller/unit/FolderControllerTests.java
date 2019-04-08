@@ -191,8 +191,7 @@ public class FolderControllerTests {
         this.mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/{targetFolderId}",
                 UUID.randomUUID().toString(), UUID.randomUUID().toString()))
-                .andExpect(status().isOk()).andExpect(
-                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isNoContent());
 
         verify(this.folderService, times(1)).move(
                 any(UUID.class), any(UUID.class));
@@ -205,8 +204,7 @@ public class FolderControllerTests {
         this.mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/root",
                 UUID.randomUUID().toString()))
-                .andExpect(status().isOk()).andExpect(
-                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isNoContent());
 
         verify(this.folderService, times(1)).move(any(UUID.class));
     }

@@ -253,8 +253,7 @@ public class FileControllerTests {
                 "/api/folders/{folderId}/files/{fileId}/move",
                 UUID.randomUUID().toString(), UUID.randomUUID().toString())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(
-                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isNoContent());
 
         verify(this.fileService, times(1)).move(
                 any(UUID.class), any(UUID.class), any(FilePojo.class));
@@ -273,8 +272,7 @@ public class FileControllerTests {
                 "/api/folders/root/files/{fileId}/move",
                 UUID.randomUUID().toString())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(
-                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isNoContent());
 
         verify(this.fileService, times(1)).move(
                 any(UUID.class), any(FilePojo.class));
