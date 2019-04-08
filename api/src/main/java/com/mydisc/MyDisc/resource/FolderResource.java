@@ -34,7 +34,11 @@ public class FolderResource extends ResourceSupport {
 
         if (this.hasParent(folder)) {
             add(linkTo(methodOn(FolderController.class).get(folder.getParent().getId())).withRel("parent"));
-            add(linkTo(methodOn(FolderController.class).listChildren(folder.getParent().getId())).withRel("children"));
+            add(linkTo(methodOn(FolderController.class).listChildren(id)).withRel("children"));
+            add(linkTo(methodOn(FileController.class).list(id)).withRel("files"));
+        } else if (folder.hasChildren()) {
+            add(linkTo(methodOn(FolderController.class).get()).withRel("parent"));
+            add(linkTo(methodOn(FolderController.class).listChildren(id)).withRel("children"));
             add(linkTo(methodOn(FileController.class).list(id)).withRel("files"));
         } else {
             add(linkTo(methodOn(FolderController.class).get()).withRel("parent"));

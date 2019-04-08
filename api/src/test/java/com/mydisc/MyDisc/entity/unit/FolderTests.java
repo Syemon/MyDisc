@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -64,5 +65,33 @@ public class FolderTests {
 
         int numberOfChildren = parent.getChildren().size();
         Assert.assertEquals(0, numberOfChildren);
+    }
+
+    @Test
+    public void testHasChildren_WhenHasNotAny_ReturnFalse() {
+        Folder folder = new Folder("folder");
+
+        Assert.assertFalse(folder.hasChildren());
+    }
+
+    @Test
+    public void testHasChildren_WhenHasEmptyList_ReturnFalse() {
+        Folder folder = new Folder("folder");
+        Folder child = new Folder("child");
+
+        folder.addChild(child);
+        folder.removeChild(child);
+
+        Assert.assertFalse(folder.hasChildren());
+    }
+
+    @Test
+    public void testHasChildren_WhenHasEmptyList_ReturnTrue() {
+        Folder folder = new Folder("folder");
+        Folder child = new Folder("child");
+
+        folder.addChild(child);
+
+        Assert.assertTrue(folder.hasChildren());
     }
 }

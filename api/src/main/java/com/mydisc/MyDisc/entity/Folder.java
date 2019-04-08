@@ -90,6 +90,16 @@ public class Folder {
         this.getChildren().remove(child);
     }
 
+    public boolean hasChildren() {
+        if (null == this.children) {
+            return false;
+        } else if (this.children.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     @Override
     public String toString() {
         return "Folder{" +
