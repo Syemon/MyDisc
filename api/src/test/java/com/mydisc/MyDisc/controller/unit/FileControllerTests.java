@@ -18,8 +18,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -49,9 +47,6 @@ public class FileControllerTests {
     @MockBean
     private File file;
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private Map<String, String> body;
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -78,7 +73,6 @@ public class FileControllerTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
                 .file(multipartFile))
                 .andExpect(status().isOk())
@@ -103,7 +97,6 @@ public class FileControllerTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(
                 "/api/folders/{folderId}/files", this.folder.getId())
                 .file(multipartFile))
@@ -128,7 +121,6 @@ public class FileControllerTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/folders/root/files/{fileId}",
                 this.file.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -152,7 +144,6 @@ public class FileControllerTests {
         when(this.folder.getId()).thenReturn(UUID.randomUUID());
         when(this.file.getFolder()).thenReturn(this.folder);
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.get(
                 "/api/folders/{folderId}/files/{fileId}", this.folder.getId(), this.file.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -178,7 +169,6 @@ public class FileControllerTests {
         this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 "dad3cfda-5124-4389-b5c2-2433a380cc49", this.file.getId())
@@ -198,7 +188,6 @@ public class FileControllerTests {
         this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49")
@@ -214,7 +203,6 @@ public class FileControllerTests {
         when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), this.file.getId()))
@@ -229,7 +217,6 @@ public class FileControllerTests {
         when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49"))
@@ -248,7 +235,6 @@ public class FileControllerTests {
         this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 UUID.randomUUID().toString(), UUID.randomUUID().toString())
@@ -267,7 +253,6 @@ public class FileControllerTests {
         this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/root/files/{fileId}/move",
                 UUID.randomUUID().toString())
