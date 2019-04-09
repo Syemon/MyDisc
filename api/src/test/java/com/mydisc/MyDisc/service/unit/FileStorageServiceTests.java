@@ -13,6 +13,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -32,6 +34,16 @@ public class FileStorageServiceTests {
 
         Assert.assertEquals(storedFileNames.get("fileName"), "test.txt");
         Assert.assertTrue(storedFileNames.get("storageFileName").matches("[a-zA-Z0-9]{16}"));
+    }
+
+    @Test
+    public void testDeleteFile() throws Exception {
+        Files.createFile(Paths.get("test_uploads/testDelete.txt"));
+
+        fileStorageService.deleteFile("testDelete.txt");
+
+        boolean exists = Files.exists(Paths.get("test_uploads/testDelete.txt"));
+        Assert.assertFalse(exists);
     }
 
     @org.junit.jupiter.api.Test

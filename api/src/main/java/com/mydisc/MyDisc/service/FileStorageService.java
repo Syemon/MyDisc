@@ -57,6 +57,14 @@ public class FileStorageService {
         }
     }
 
+    public void deleteFile(String storedFileName) {
+        try {
+            Files.delete(fileStorageLocation.resolve(storedFileName));
+        } catch (IOException ex) {
+            throw new FileStorageException("Could not delete file", ex);
+        }
+    }
+
     public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();

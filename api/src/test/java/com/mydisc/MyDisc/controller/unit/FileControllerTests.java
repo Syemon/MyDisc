@@ -347,6 +347,6 @@ public class FileControllerTests {
                 .andExpect(status().isNoContent());
 
         verify(this.fileService, times(1)).delete(
-                any(UUID.class), any(UUID.class));
+                any(UUID.class));
     }
 }

@@ -51,6 +51,17 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
+    public void delete(UUID fileId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query query = session.createQuery(
+                "delete from File where id = :fileId");
+
+        query.setParameter("fileId", fileId)
+                .executeUpdate();
+    }
+
+    @Override
     public List<File> list() {
         Session session = entityManager.unwrap(Session.class);
 

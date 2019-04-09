@@ -10,12 +10,13 @@ import java.util.UUID;
 
 public interface FileDao {
 
-    public File findById(UUID fileId);
-    public File findById(UUID folderId, UUID fileId);
-    public List<File> list();
-    public List<File> list(UUID folderId);
-    public File save(MultipartFile rawFile, Map<String, String> fileNames);
-    public File save(UUID folderId, MultipartFile rawFile, Map<String, String> fileNames);
-    public void move(UUID fileId, FilePojo filePojo);
-    public void move(UUID folderId, UUID fileId, FilePojo filePojo);
+    File findById(UUID fileId);
+    File findById(UUID folderId, UUID fileId);
+    void delete(UUID fileId);
+    List<File> list();
+    List<File> list(UUID folderId);
+    File save(MultipartFile rawFile, Map<String, String> fileNames);
+    File save(UUID folderId, MultipartFile rawFile, Map<String, String> fileNames);
+    void move(UUID fileId, FilePojo filePojo);
+    void move(UUID folderId, UUID fileId, FilePojo filePojo);
 }

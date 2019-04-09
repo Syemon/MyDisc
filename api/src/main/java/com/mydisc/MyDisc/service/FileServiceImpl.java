@@ -55,13 +55,9 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public void delete(UUID fileId) {
-
-    }
-
-    @Override
-    @Transactional
-    public void delete(UUID folderId, UUID fileId) {
-
+        String storageName = fileDao.findById(fileId).getStorageName();
+        fileDao.delete(fileId);
+        fileStorageService.deleteFile(storageName);
     }
 
     @Override

@@ -139,4 +139,14 @@ public class FileServiceTests {
         verify(this.fileDao, times(1)).move(
                 any(UUID.class), any(UUID.class), any(FilePojo.class));
     }
+
+    @Test
+    public void testDelete() {
+        doNothing().when(this.fileStorageService).deleteFile(any(String.class));
+        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
+        this.fileService.delete(UUID.randomUUID());
+
+        verify(this.fileDao, times(1)).delete(
+                any(UUID.class));
+    }
 }

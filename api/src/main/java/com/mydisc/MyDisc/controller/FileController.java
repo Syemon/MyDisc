@@ -166,7 +166,7 @@ public class FileController {
             throw new FileNotFoundException("File was not found");
         }
 
-        fileService.delete(folderId, fileId);
+        fileService.delete(fileId);
 
         return ResponseEntity.noContent().build();
     }
