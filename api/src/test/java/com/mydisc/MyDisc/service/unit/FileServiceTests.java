@@ -62,7 +62,8 @@ public class FileServiceTests {
 
         when(this.fileDao.list()).thenReturn(new ArrayList<File>(files));
 
-        Resources<FileResource> resources = this.fileService.list();
+        List<File> resultFiles = this.fileService.list();
+        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertTrue(fileResource instanceof FileResource);
@@ -78,9 +79,10 @@ public class FileServiceTests {
         List<File> files = new ArrayList<>();
         files.add(this.file);
 
-        when(this.fileDao.list()).thenReturn(new ArrayList<File>(files));
+        when(this.fileDao.list(any(UUID.class))).thenReturn(new ArrayList<File>(files));
 
-        Resources<FileResource> resources = this.fileService.list();
+        List<File> resultFiles = this.fileService.list(UUID.randomUUID());
+        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertTrue(fileResource instanceof FileResource);
@@ -95,7 +97,8 @@ public class FileServiceTests {
     public void testList_WithoutFolderId_WithNoFilesFound() {
         when(this.fileDao.list()).thenReturn(new ArrayList<File>());
 
-        Resources<FileResource> resources = this.fileService.list();
+        List<File> resultFiles = this.fileService.list();
+        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertFalse(fileResource instanceof FileResource);
@@ -108,9 +111,10 @@ public class FileServiceTests {
 
     @Test
     public void testList_WithFolderId_WithNoFilesFound() {
-        when(this.fileDao.list()).thenReturn(new ArrayList<File>());
+        when(this.fileDao.list(any(UUID.class))).thenReturn(new ArrayList<File>());
 
-        Resources<FileResource> resources = this.fileService.list();
+        List<File> resultFiles = this.fileService.list(UUID.randomUUID());
+        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertFalse(fileResource instanceof FileResource);

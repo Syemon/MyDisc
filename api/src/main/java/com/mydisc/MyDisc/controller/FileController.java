@@ -76,14 +76,16 @@ public class FileController {
 
     @GetMapping(value = "/folders/root/files", produces = { "application/hal+json" })
     public ResponseEntity<Resources<FileResource>> list() {
-        Resources<FileResource> resources = fileService.list();
+        List<File> files = fileService.list();
+        Resources<FileResource> resources = fileService.getFileResources(files);
 
         return ResponseEntity.ok(resources);
     }
 
     @GetMapping(value = "/folders/{folderId}/files", produces = { "application/hal+json" })
     public ResponseEntity<Resources<FileResource>> list(@PathVariable("folderId") UUID folderId) {
-        Resources<FileResource> resources = fileService.list(folderId);
+        List<File> files = fileService.list(folderId);
+        Resources<FileResource> resources = fileService.getFileResources(files);
 
         return ResponseEntity.ok(resources);
     }

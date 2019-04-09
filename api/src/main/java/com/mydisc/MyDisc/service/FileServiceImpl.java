@@ -52,20 +52,17 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Resources<FileResource> list() {
-        List<File> files = fileDao.list();
-
-        return getFileResources(files);
+    public List<File> list() {
+        return fileDao.list();
     }
 
     @Override
-    public Resources<FileResource> list(UUID folderId) {
-        List<File> files = fileDao.list(folderId);
-
-        return getFileResources(files);
+    public List<File> list(UUID folderId) {
+        return fileDao.list(folderId);
     }
 
-    private Resources<FileResource> getFileResources(List<File> files) {
+    @Override
+    public Resources<FileResource> getFileResources(List<File> files) {
         List<FileResource> fileResources = new ArrayList<>();
 
         for (File file : files) {
