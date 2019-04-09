@@ -27,6 +27,7 @@ public class FileServiceImpl implements FileService {
     private FileDao fileDao;
 
     @Override
+    @Transactional
     public ResponseEntity<Resource> download(UUID fileId) {
         File file = this.findById(fileId);
 
@@ -52,26 +53,31 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID fileId) {
 
     }
 
     @Override
+    @Transactional
     public void delete(UUID folderId, UUID fileId) {
 
     }
 
     @Override
+    @Transactional
     public List<File> list() {
         return fileDao.list();
     }
 
     @Override
+    @Transactional
     public List<File> list(UUID folderId) {
         return fileDao.list(folderId);
     }
 
     @Override
+    @Transactional
     public Resources<FileResource> getFileResources(List<File> files) {
         List<FileResource> fileResources = new ArrayList<>();
 
