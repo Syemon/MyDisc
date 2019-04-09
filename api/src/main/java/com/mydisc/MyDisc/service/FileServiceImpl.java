@@ -52,6 +52,16 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public void delete(UUID fileId) {
+
+    }
+
+    @Override
+    public void delete(UUID folderId, UUID fileId) {
+
+    }
+
+    @Override
     public List<File> list() {
         return fileDao.list();
     }

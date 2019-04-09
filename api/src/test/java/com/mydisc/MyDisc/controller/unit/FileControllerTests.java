@@ -277,4 +277,76 @@ public class FileControllerTests {
         verify(this.fileService, times(1)).move(
                 any(UUID.class), any(FilePojo.class));
     }
+
+    @Test
+    public void testDelete_WhenInRootFileDoesNotExist_ReturnError() throws Exception {
+        when(this.fileService.findById(any(UUID.class))).thenReturn(null);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+                "/api/folders/root/files/{fileId}",
+                UUID.randomUUID().toString()))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("File was not found"));
+    }
+
+    @Test
+    public void testDelete_WhenInFolderFileDoesNotExist_ReturnError() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.fileService.findById(any(UUID.class))).thenReturn(null);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+                "/api/folders/{folderId}/files/{fileId}",
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString()))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("File was not found"));
+    }
+
+    @Test
+    public void testDelete_WhenFolderDoesNotExist_ReturnError() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+                "/api/folders/{folderId}/files/{fileId}",
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString()))
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value("Folder was not found"));
+    }
+
+    @Test
+    public void testDelete_WhenFileInRoot_ReturnSuccess() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+                "/api/folders/root/files/{fileId}",
+                UUID.randomUUID().toString()))
+                .andExpect(status().isNoContent());
+
+        verify(this.fileService, times(1)).delete(
+                any(UUID.class));
+    }
+
+    @Test
+    public void testDelete_WhenFileInFolder_ReturnSuccess() throws Exception {
+        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+                "/api/folders/{folderId}/files/{fileId}",
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString()))
+                .andExpect(status().isNoContent());
+
+        verify(this.fileService, times(1)).delete(
+                any(UUID.class), any(UUID.class));
+    }
 }

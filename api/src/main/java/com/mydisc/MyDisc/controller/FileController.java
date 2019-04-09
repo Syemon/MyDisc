@@ -141,4 +141,33 @@ public class FileController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/folders/root/files/{fileId}")
+    public ResponseEntity delete(@PathVariable UUID fileId) {
+        File file = fileService.findById(fileId);
+        if (null == file) {
+            throw new FileNotFoundException("File was not found");
+        }
+
+        fileService.delete(fileId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/folders/{folderId}/files/{fileId}")
+    public ResponseEntity delete(@PathVariable UUID folderId, @PathVariable UUID fileId) {
+        Folder folder = folderService.findById(folderId);
+        if (null == folder) {
+            throw new FolderNotFoundException("Folder was not found");
+        }
+
+        File file = fileService.findById(folderId, fileId);
+        if (null == file) {
+            throw new FileNotFoundException("File was not found");
+        }
+
+        fileService.delete(folderId, fileId);
+
+        return ResponseEntity.noContent().build();
+    }
 }

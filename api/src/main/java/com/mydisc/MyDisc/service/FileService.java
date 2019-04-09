@@ -14,6 +14,8 @@ public interface FileService {
     public ResponseEntity download(UUID fileId);
     public File findById(UUID fileId);
     public File findById(UUID folderId, UUID fileId);
+    public void delete(UUID fileId);
+    public void delete(UUID folderId, UUID fileId);
     public List<File> list();
     public List<File> list(UUID folderId);
     public Resources<FileResource> getFileResources(List<File> files);
