@@ -22,13 +22,14 @@ public class FileResource extends ResourceSupport {
 
         UUID id = file.getId();
 
-
         if (this.hasFolder(file)) {
             add(linkTo(methodOn(FileController.class).get(file.getFolder().getId(), id)).withSelfRel());
-            add(linkTo(methodOn(FolderController.class).get(file.getId())).withRel("folder"));
+            add(linkTo(methodOn(FolderController.class).get(file.getFolder().getId())).withRel("folder"));
+            add(linkTo(methodOn(FileController.class).delete(file.getFolder().getId(), id)).withRel("delete"));
         } else {
             add(linkTo(methodOn(FileController.class).get(id)).withSelfRel());
             add(linkTo(methodOn(FolderController.class).get()).withRel("folder"));
+            add(linkTo(methodOn(FileController.class).delete(id)).withRel("delete"));
         }
 
         add(linkTo(methodOn(FileController.class).download(file.getId())).withRel("download"));
