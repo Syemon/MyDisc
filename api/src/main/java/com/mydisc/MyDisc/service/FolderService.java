@@ -24,4 +24,6 @@ public interface FolderService {
     void move(UUID folderId);
 
     void move(UUID folderId, UUID targetFolderId);
+
+    boolean exists(UUID folderId);
 }

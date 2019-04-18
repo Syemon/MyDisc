@@ -44,8 +44,7 @@ public class FolderController {
 
     @GetMapping(value = "/folders/{folderId}/children", produces = { "application/hal+json" })
     public ResponseEntity<Resources<FolderResource>> listChildren(@PathVariable UUID folderId) {
-        Folder targetFolder = folderService.findById(folderId);
-        if (null == targetFolder) {
+        if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
 
@@ -77,10 +76,10 @@ public class FolderController {
 
     @GetMapping("/folders/{folderId}")
     public FolderResource get(@PathVariable UUID folderId) {
-        Folder folder = folderService.findById(folderId);
-        if (null == folder) {
+        if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
+        Folder folder = folderService.findById(folderId);
 
         Map<String, String> body = new HashMap<>();
         body.put("id", folder.getId().toString());
@@ -92,8 +91,8 @@ public class FolderController {
     @PostMapping(value = "/folders", produces = { "application/hal+json" })
     public FolderResource create(@RequestBody FolderPojo folderPojo) {
         if (null != folderPojo.getParentId()) {
-            Folder parent = folderService.findById(UUID.fromString(folderPojo.getParentId()));
-            if (null == parent) {
+            UUID folderId = UUID.fromString(folderPojo.getParentId());
+            if (!folderService.exists(folderId)) {
                 throw new FolderNotFoundException("Not found - " + folderPojo.getParentId());
             }
         }
@@ -109,8 +108,7 @@ public class FolderController {
 
     @PatchMapping(value = "/folders/{folderId}", produces = { "application/hal+json" })
     public FolderResource rename(@PathVariable UUID folderId, @RequestBody FolderPojo folderPojo) {
-        Folder targetFolder = folderService.findById(folderId);
-        if (null == targetFolder) {
+        if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
         if (null == folderPojo.getName()) {
@@ -128,8 +126,7 @@ public class FolderController {
 
     @DeleteMapping("/folders/{folderId}")
     public ResponseEntity delete(@PathVariable UUID folderId) {
-        Folder folder = folderService.findById(folderId);
-        if (null == folder) {
+        if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
 
@@ -140,8 +137,7 @@ public class FolderController {
 
     @PatchMapping(value = "/folders/{folderId}/move/root")
     public ResponseEntity moveFile(@PathVariable("folderId") UUID folderId) {
-        Folder folder = folderService.findById(folderId);
-        if (null == folder) {
+        if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
 
@@ -155,13 +151,10 @@ public class FolderController {
             @PathVariable("folderId") UUID folderId,
             @PathVariable("targetFolderId") UUID targetFolderId
     ) {
-        Folder folder = folderService.findById(folderId);
-        if (null == folder) {
+        if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Not found - " + folderId);
         }
-
-        Folder targetFolder = folderService.findById(targetFolderId);
-        if (null == targetFolder) {
+        if (!folderService.exists(targetFolderId)) {
             throw new FolderNotFoundException("Not found - " + targetFolderId);
         }
 

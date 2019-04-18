@@ -134,6 +134,24 @@ public class FolderDaoTests {
         Assert.assertTrue(targetFolder.getChildren().contains(folder));
     }
 
+    @Test
+    @Transactional
+    public void testExists_WhenExists_ReturnTrue() {
+        Folder folder = this.getFolder("Test");
+
+        boolean result = this.folderDao.exists(folder.getId());
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    @Transactional
+    public void testExists_WhenNotExists_ReturnFalse() {
+        boolean result = this.folderDao.exists(UUID.randomUUID());
+
+        Assert.assertFalse(result);
+    }
+
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);

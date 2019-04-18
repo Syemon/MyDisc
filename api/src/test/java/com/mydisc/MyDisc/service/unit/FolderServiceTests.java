@@ -4,6 +4,7 @@ import com.mydisc.MyDisc.dao.FolderDao;
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.service.FolderService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,23 @@ public class FolderServiceTests {
 
         verify(this.folderDao, times(1)).move(
                 any(UUID.class), any(UUID.class));
+    }
+
+    @Test
+    public void testExists_WhenExists_ReturnTrue() {
+        when(this.folderDao.exists(any(UUID.class))).thenReturn(true);
+
+        boolean result = this.folderService.exists(UUID.randomUUID());
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testExists_WhenNotExists_ReturnFalse() {
+        when(this.folderDao.exists(any(UUID.class))).thenReturn(false);
+
+        boolean result = this.folderService.exists(UUID.randomUUID());
+
+        Assert.assertFalse(result);
     }
 }

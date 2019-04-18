@@ -22,6 +22,12 @@ public class FolderServiceImpl implements FolderService{
 
     @Override
     @Transactional
+    public boolean exists(UUID folderId) {
+        return this.folderDao.exists(folderId);
+    }
+
+    @Override
+    @Transactional
     public List<Folder> findAll() {
         return this.folderDao.findAll();
     }

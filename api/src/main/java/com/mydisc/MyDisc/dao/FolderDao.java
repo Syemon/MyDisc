@@ -9,6 +9,8 @@ import java.util.UUID;
 
 public interface FolderDao {
 
+    boolean exists(UUID folderId);
+
     public List<Folder> findAll();
 
     public Folder findById(UUID id);

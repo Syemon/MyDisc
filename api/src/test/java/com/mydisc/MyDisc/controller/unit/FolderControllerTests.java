@@ -127,7 +127,7 @@ public class FolderControllerTests {
         String jsonBody = mapper.writeValueAsString(body);
 
         when(this.folder.getId()).thenReturn(UUID.randomUUID());
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
 
         this.mockMvc.perform(patch("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14")
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
@@ -168,8 +168,8 @@ public class FolderControllerTests {
         UUID folderId = UUID.fromString("333e1f7f-a06e-413f-a137-35d2b0c7d4c8");
         UUID targetFolderId = UUID.fromString("dad3cfda-5124-4389-b5c2-2433a380cc49");
 
-        when(this.folderService.findById(folderId)).thenReturn(this.folder);
-        when(this.folderService.findById(targetFolderId)).thenReturn(null);
+        when(this.folderService.exists(folderId)).thenReturn(true);
+        when(this.folderService.exists(targetFolderId)).thenReturn(false);
 
         this.mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/{targetFolderId}",
@@ -182,7 +182,7 @@ public class FolderControllerTests {
 
     @Test
     public void testMove_ToAnotherFolder() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
 
         this.mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/{targetFolderId}",
@@ -195,7 +195,7 @@ public class FolderControllerTests {
 
     @Test
     public void testMove_ToRootFolder() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
 
         this.mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/root",
@@ -265,7 +265,7 @@ public class FolderControllerTests {
         when(this.folder.getName()).thenReturn("folder");
         when(this.folder.getId()).thenReturn(UUID.randomUUID());
         when(this.folder.getParent()).thenReturn(folder2);
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
         when(this.folderService.save(any(FolderPojo.class))).thenReturn(this.folder);
 
         this.body = new HashMap<>();

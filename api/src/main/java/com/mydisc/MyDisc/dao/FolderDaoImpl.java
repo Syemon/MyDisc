@@ -22,6 +22,19 @@ public class FolderDaoImpl implements FolderDao {
     }
 
     @Override
+    public boolean exists(UUID folderId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query query = session.createQuery(
+                "SELECT 1 " +
+                        "FROM Folder " +
+                        "WHERE id=:folderId");
+
+        return query.setParameter("folderId", folderId)
+                .uniqueResult() != null;
+    }
+
+    @Override
     public List<Folder> findAll() {
         Session session = entityManager.unwrap(Session.class);
 
