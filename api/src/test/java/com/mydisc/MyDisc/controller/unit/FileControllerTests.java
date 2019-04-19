@@ -141,13 +141,11 @@ public class FileControllerTests {
     @Test
     public void testGet_WithSomeFolder() throws Exception {
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
-        when(this.folder.getId()).thenReturn(UUID.randomUUID());
-        when(this.file.getFolder()).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(
                 "/api/folders/{folderId}/files/{fileId}", this.folder.getId(), this.file.getId())
                 .contentType(MediaType.APPLICATION_JSON))
-
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith("application/hal+json"))
@@ -176,12 +174,12 @@ public class FileControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
     public void testMove_ValidateWithNotExistFile() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(null);
 
         this.body = new HashMap<>();
@@ -228,7 +226,7 @@ public class FileControllerTests {
 
     @Test
     public void testMove() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
 
         this.body = new HashMap<>();
@@ -278,7 +276,7 @@ public class FileControllerTests {
 
     @Test
     public void testDelete_WhenInFolderFileDoesNotExist_ReturnError() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
         when(this.fileService.findById(any(UUID.class))).thenReturn(null);
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete(
@@ -322,7 +320,7 @@ public class FileControllerTests {
 
     @Test
     public void testDelete_WhenFileInFolder_ReturnSuccess() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
         when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete(

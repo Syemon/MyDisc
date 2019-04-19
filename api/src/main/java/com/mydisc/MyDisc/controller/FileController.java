@@ -2,7 +2,6 @@ package com.mydisc.MyDisc.controller;
 
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.FilePojo;
-import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.exception.FileNotFoundException;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
 import com.mydisc.MyDisc.resource.FileResource;
@@ -45,10 +44,8 @@ public class FileController {
 
     @GetMapping(value = "/folders/{folderId}/files/{fileId}", produces = { "application/hal+json" })
     public FileResource get(@PathVariable("folderId") UUID folderId, @PathVariable("fileId") UUID fileId) {
-        try {
-            folderService.findById(folderId);
-        } catch (Exception exc) {
-            throw new FolderNotFoundException("Not found - " + folderId);
+        if (!folderService.exists(folderId)) {
+            throw new FolderNotFoundException("Folder was not found");
         }
 
         try {
@@ -127,9 +124,8 @@ public class FileController {
             @PathVariable("folderId") UUID fileId,
             @Valid @RequestBody FilePojo filePojo
     ) {
-        Folder folder = folderService.findById(folderId);
-        if (null == folder) {
-            throw new FolderNotFoundException("Not found - " + folderId);
+        if (!folderService.exists(folderId)) {
+            throw new FolderNotFoundException("Folder was not found");
         }
 
         File file = fileService.findById(folderId, fileId);
@@ -156,8 +152,7 @@ public class FileController {
 
     @DeleteMapping("/folders/{folderId}/files/{fileId}")
     public ResponseEntity delete(@PathVariable UUID folderId, @PathVariable UUID fileId) {
-        Folder folder = folderService.findById(folderId);
-        if (null == folder) {
+        if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Folder was not found");
         }
 

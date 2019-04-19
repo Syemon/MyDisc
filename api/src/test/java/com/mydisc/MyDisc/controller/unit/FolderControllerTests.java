@@ -73,7 +73,7 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - 4555c2c6-5024-40cf-b15b-24548973cc14"));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - 4555c2c6-5024-40cf-b15b-24548973cc14"));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - 4555c2c6-5024-40cf-b15b-24548973cc14"));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - 4555c2c6-5024-40cf-b15b-24548973cc14"));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
@@ -160,7 +160,7 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
@@ -177,7 +177,7 @@ public class FolderControllerTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").value("Not found - " + targetFolderId.toString()));
+                .andExpect(jsonPath("message").value("Folder was not found"));
     }
 
     @Test
@@ -221,7 +221,7 @@ public class FolderControllerTests {
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message")
-                        .value("Not found - dad3cfda-5124-4389-b5c2-2433a380cc49"));
+                        .value("Folder was not found"));
     }
 
     @Test
