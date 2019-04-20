@@ -2,7 +2,6 @@ package com.mydisc.MyDisc.controller;
 
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.FilePojo;
-import com.mydisc.MyDisc.exception.FileNotFoundException;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
 import com.mydisc.MyDisc.resource.FileResource;
 import com.mydisc.MyDisc.service.FileService;
@@ -30,10 +29,8 @@ public class FileController {
 
     @GetMapping(value = "/folders/root/files/{fileId}", produces = { "application/hal+json" })
     public FileResource get(@PathVariable("fileId") UUID fileId) {
-        try {
-            File resultFile = fileService.findById(fileId);
-        } catch (Exception exc) {
-            throw new FileNotFoundException("File was not found");
+        if (!fileService.exists(fileId)) {
+            throw new FolderNotFoundException("File was not found");
         }
 
         File resultFile = fileService.findById(fileId);
@@ -47,11 +44,8 @@ public class FileController {
         if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Folder was not found");
         }
-
-        try {
-            File resultFile = fileService.findById(fileId);
-        } catch (Exception exc) {
-            throw new FileNotFoundException("File was not found");
+        if (!fileService.exists(folderId, fileId)) {
+            throw new FolderNotFoundException("File was not found");
         }
 
         File resultFile = fileService.findById(folderId, fileId);
@@ -62,10 +56,8 @@ public class FileController {
 
     @GetMapping(value = "/downloads/{fileId}", produces = { "application/hal+json" })
     public ResponseEntity<Resource> download(@PathVariable("fileId") UUID fileId) {
-        try {
-            File resultFile = fileService.findById(fileId);
-        } catch (Exception exc) {
-            throw new FileNotFoundException("File was not found");
+        if (!fileService.exists(fileId)) {
+            throw new FolderNotFoundException("File was not found");
         }
 
         return fileService.download(fileId);
@@ -108,9 +100,8 @@ public class FileController {
             @PathVariable("fileId") UUID fileId,
             @Valid @RequestBody FilePojo filePojo
     ) {
-        File file = fileService.findById(fileId);
-        if (null == file) {
-            throw new FileNotFoundException("File was not found");
+        if (!fileService.exists(fileId)) {
+            throw new FolderNotFoundException("File was not found");
         }
 
         fileService.move(fileId, filePojo);
@@ -127,10 +118,8 @@ public class FileController {
         if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Folder was not found");
         }
-
-        File file = fileService.findById(folderId, fileId);
-        if (null == file) {
-            throw new FileNotFoundException("File was not found");
+        if (!fileService.exists(folderId, fileId)) {
+            throw new FolderNotFoundException("File was not found");
         }
 
         fileService.move(folderId, fileId, filePojo);
@@ -140,9 +129,8 @@ public class FileController {
 
     @DeleteMapping("/folders/root/files/{fileId}")
     public ResponseEntity delete(@PathVariable UUID fileId) {
-        File file = fileService.findById(fileId);
-        if (null == file) {
-            throw new FileNotFoundException("File was not found");
+        if (!fileService.exists(fileId)) {
+            throw new FolderNotFoundException("File was not found");
         }
 
         fileService.delete(fileId);
@@ -155,10 +143,8 @@ public class FileController {
         if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Folder was not found");
         }
-
-        File file = fileService.findById(folderId, fileId);
-        if (null == file) {
-            throw new FileNotFoundException("File was not found");
+        if (!fileService.exists(folderId, fileId)) {
+            throw new FolderNotFoundException("File was not found");
         }
 
         fileService.delete(fileId);
