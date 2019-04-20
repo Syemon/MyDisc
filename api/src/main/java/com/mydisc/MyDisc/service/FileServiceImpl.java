@@ -62,6 +62,18 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
+    public boolean exists(UUID fileId) {
+        return this.fileDao.exists(fileId);
+    }
+
+    @Override
+    @Transactional
+    public boolean exists(UUID folderId, UUID fileId) {
+        return this.fileDao.exists(folderId, fileId);
+    }
+
+    @Override
+    @Transactional
     public List<File> list() {
         return fileDao.list();
     }

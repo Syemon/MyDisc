@@ -62,6 +62,33 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
+    public boolean exists(UUID fileId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query query = session.createQuery(
+                "SELECT 1 " +
+                        "FROM File " +
+                        "WHERE id = :fileId");
+
+        return query.setParameter("fileId", fileId)
+                .uniqueResult() != null;
+    }
+
+    @Override
+    public boolean exists(UUID folderId, UUID fileId) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query query = session.createQuery(
+                "SELECT 1 " +
+                        "FROM File " +
+                        "WHERE id = :fileId AND folder_id = :folderId");
+
+        return query.setParameter("fileId", fileId)
+                .setParameter("folderId", folderId)
+                .uniqueResult() != null;
+    }
+
+    @Override
     public List<File> list() {
         Session session = entityManager.unwrap(Session.class);
 

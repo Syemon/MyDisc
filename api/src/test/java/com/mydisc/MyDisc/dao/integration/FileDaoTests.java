@@ -5,10 +5,7 @@ import com.mydisc.MyDisc.dao.FileDao;
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.entity.Folder;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -174,6 +171,47 @@ public class FileDaoTests {
         Assert.assertEquals(targetFolder, file.getFolder());
     }
 
+    @Test
+    @Transactional
+    public void testExists_WhenExists_ReturnTrue() {
+        File file = getFile();
+
+        boolean result = this.fileDao.exists(file.getId());
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    @Transactional
+    public void testExists_WhenNotExists_ReturnFalse() {
+        boolean result = this.fileDao.exists(UUID.randomUUID());
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    @Transactional
+    public void testExists_WhenExistsInsideFolder_ReturnTrue() {
+        File file = this.getFileWithFolderRelation();
+
+        boolean result = this.fileDao.exists(
+                file.getFolder().getId(),
+                file.getId()
+        );
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    @Transactional
+    public void testExists_WhenNotExistsInsideFolder_ReturnFalse() {
+        File file = getFile();
+
+        boolean result = this.fileDao.exists(UUID.randomUUID(), file.getId());
+
+        Assert.assertFalse(result);
+    }
+
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
@@ -192,6 +230,19 @@ public class FileDaoTests {
         file.setStorageName("qweqweqweqwe123");
         file.setType("text/plain");
         file.setSize(123L);
+        entityManager.unwrap(Session.class);
+        entityManager.persist(file);
+        entityManager.flush();
+        entityManager.refresh(file);
+
+        return file;
+    }
+
+    @Transactional
+    private File getFileWithFolderRelation() {
+        File file = this.getFile();
+        file.setFolder(this.getFolder("Lorem"));
+
         entityManager.unwrap(Session.class);
         entityManager.persist(file);
         entityManager.flush();

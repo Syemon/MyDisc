@@ -7,6 +7,7 @@ import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.resource.FileResource;
 import com.mydisc.MyDisc.service.FileService;
 import com.mydisc.MyDisc.service.FileStorageService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -148,5 +149,41 @@ public class FileServiceTests {
 
         verify(this.fileDao, times(1)).delete(
                 any(UUID.class));
+    }
+
+    @Test
+    public void testExists_WhenExists_ReturnTrue() {
+        when(this.fileDao.exists(any(UUID.class))).thenReturn(true);
+
+        boolean result = this.fileService.exists(UUID.randomUUID());
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testExists_WhenNotExists_ReturnFalse() {
+        when(this.fileDao.exists(any(UUID.class))).thenReturn(false);
+
+        boolean result = this.fileService.exists(UUID.randomUUID());
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void testExists_WhenFileExistsInsideFolder_ReturnTrue() {
+        when(this.fileDao.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
+
+        boolean result = this.fileService.exists(UUID.randomUUID(), UUID.randomUUID());
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testExists_WhenFileNotExistsInsideFolder_ReturnFalse() {
+        when(this.fileDao.exists(any(UUID.class), any(UUID.class))).thenReturn(false);
+
+        boolean result = this.fileService.exists(UUID.randomUUID(), UUID.randomUUID());
+
+        Assert.assertFalse(result);
     }
 }

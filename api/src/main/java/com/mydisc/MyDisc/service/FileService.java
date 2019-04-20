@@ -22,4 +22,6 @@ public interface FileService {
     public File upload(UUID folderId, MultipartFile file);
     public void move(UUID fileId, FilePojo filePojo);
     public void move(UUID folderId, UUID fileId, FilePojo filePojo);
+    boolean exists(UUID fileId);
+    boolean exists(UUID folderId, UUID fileId);
 }

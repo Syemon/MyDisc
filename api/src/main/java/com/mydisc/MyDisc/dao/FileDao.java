@@ -19,4 +19,6 @@ public interface FileDao {
     File save(UUID folderId, MultipartFile rawFile, Map<String, String> fileNames);
     void move(UUID fileId, FilePojo filePojo);
     void move(UUID folderId, UUID fileId, FilePojo filePojo);
+    boolean exists(UUID fileId);
+    boolean exists(UUID folderId, UUID fileId);
 }
