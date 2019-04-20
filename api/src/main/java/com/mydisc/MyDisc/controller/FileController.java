@@ -73,6 +73,10 @@ public class FileController {
 
     @GetMapping(value = "/folders/{folderId}/files", produces = { "application/hal+json" })
     public ResponseEntity<Resources<FileResource>> list(@PathVariable("folderId") UUID folderId) {
+        if (!folderService.exists(folderId)) {
+            throw new FolderNotFoundException("Folder was not found");
+        }
+
         List<File> files = fileService.list(folderId);
         Resources<FileResource> resources = fileService.getFileResources(files);
 
@@ -89,6 +93,10 @@ public class FileController {
 
     @PostMapping(value = "/folders/{folderId}/files", produces = { "application/hal+json" })
     public FileResource upload(@PathVariable("folderId") UUID folderId, @RequestPart("file")MultipartFile file) {
+        if (!folderService.exists(folderId)) {
+            throw new FolderNotFoundException("Folder was not found");
+        }
+
         File resultFile = fileService.upload(folderId, file);
         Map<String, String> body = FileResourceBodyProcessor.getFullFileBody(resultFile);
 

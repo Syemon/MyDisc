@@ -68,7 +68,6 @@ public class FileControllerTests {
     @Test
     public void testCreate_WithRootFolder() throws Exception {
         when(this.fileService.upload(any(MultipartFile.class))).thenReturn(this.file);
-        when(this.file.getFolder()).thenReturn(null);
 
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
@@ -90,9 +89,8 @@ public class FileControllerTests {
 
     @Test
     public void testCreate_WithSomeFolder() throws Exception {
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
         when(this.fileService.upload(any(UUID.class), any(MultipartFile.class))).thenReturn(this.file);
-        when(this.folder.getId()).thenReturn(UUID.randomUUID());
-        when(this.file.getFolder()).thenReturn(this.folder);
 
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
@@ -199,9 +197,6 @@ public class FileControllerTests {
 
     @Test
     public void testMove_ValidateWithoutBody() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
-        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
-
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), this.file.getId()))
@@ -213,9 +208,6 @@ public class FileControllerTests {
 
     @Test
     public void testMove_ValidateWithNullFolderIdInBody() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
-        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
-
         this.mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49"))
@@ -264,7 +256,7 @@ public class FileControllerTests {
 
     @Test
     public void testDelete_WhenInRootFileDoesNotExist_ReturnError() throws Exception {
-        when(this.fileService.findById(any(UUID.class))).thenReturn(null);
+        when(this.fileService.exists(any(UUID.class))).thenReturn(false);
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/root/files/{fileId}",
@@ -278,7 +270,7 @@ public class FileControllerTests {
     @Test
     public void testDelete_WhenInFolderFileDoesNotExist_ReturnError() throws Exception {
         when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.findById(any(UUID.class))).thenReturn(null);
+        when(this.fileService.exists(any(UUID.class))).thenReturn(false);
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/{folderId}/files/{fileId}",
@@ -292,8 +284,8 @@ public class FileControllerTests {
 
     @Test
     public void testDelete_WhenFolderDoesNotExist_ReturnError() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
-        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
+        when(this.folderService.exists(any(UUID.class))).thenReturn(false);
+        when(this.fileService.exists(any(UUID.class))).thenReturn(true);
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/{folderId}/files/{fileId}",
