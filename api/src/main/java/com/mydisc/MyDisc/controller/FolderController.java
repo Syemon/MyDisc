@@ -1,10 +1,10 @@
 package com.mydisc.MyDisc.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mydisc.MyDisc.entity.*;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
 import com.mydisc.MyDisc.exception.RequiredParameterException;
 import com.mydisc.MyDisc.resource.FolderResource;
+import com.mydisc.MyDisc.resource.FolderResourceCreator;
 import com.mydisc.MyDisc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resources;
@@ -27,19 +27,9 @@ public class FolderController {
     public ResponseEntity<Resources<FolderResource>> listChildren() {
         List<Folder> folders = folderService.findChildren();
 
-        List<FolderResource> folderResources = new ArrayList<>();
-
-        for (Folder folder : folders) {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> body = new HashMap<>();
-            body.put("name", folder.getName());
-
-            folderResources.add(new FolderResource(folder, body));
-        }
-
-        Resources<FolderResource> resources = new Resources<>(folderResources);
-
-        return ResponseEntity.ok(resources);
+        return ResponseEntity.ok(
+                FolderResourceCreator.getResources(folders)
+        );
     }
 
     @GetMapping(value = "/folders/{folderId}/children", produces = { "application/hal+json" })
@@ -50,28 +40,14 @@ public class FolderController {
 
         List<Folder> folders = folderService.findChildren(folderId);
 
-        List<FolderResource> folderResources = new ArrayList<>();
-
-        for (Folder folder : folders) {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> body = new HashMap<>();
-            body.put("name", folder.getName());
-
-            folderResources.add(new FolderResource(folder, body));
-        }
-
-        Resources<FolderResource> resources = new Resources<>(folderResources);
-
-        return ResponseEntity.ok(resources);
+        return ResponseEntity.ok(
+                FolderResourceCreator.getResources(folders)
+        );
     }
 
     @GetMapping("/folders/root")
     public FolderResource get() {
-        Map<String, String> body = new HashMap<>();
-        body.put("id", "root");
-        body.put("name", "root");
-
-        return new FolderResource(body);
+        return FolderResourceCreator.getResource();
     }
 
     @GetMapping("/folders/{folderId}")
@@ -79,13 +55,10 @@ public class FolderController {
         if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Folder was not found");
         }
+
         Folder folder = folderService.findById(folderId);
 
-        Map<String, String> body = new HashMap<>();
-        body.put("id", folder.getId().toString());
-        body.put("name", folder.getName());
-        
-        return new FolderResource(folder, body);
+        return FolderResourceCreator.getResource(folder);
     }
 
     @PostMapping(value = "/folders", produces = { "application/hal+json" })
@@ -99,11 +72,7 @@ public class FolderController {
 
         Folder folder = folderService.save(folderPojo);
 
-        Map<String, String> body = new HashMap<>();
-        body.put("id", folder.getId().toString());
-        body.put("name", folder.getName());
-
-        return new FolderResource(folder, body);
+        return FolderResourceCreator.getResource(folder);
     }
 
     @PatchMapping(value = "/folders/{folderId}", produces = { "application/hal+json" })
@@ -118,10 +87,7 @@ public class FolderController {
         folderPojo.setId(folderId);
         Folder folder = folderService.rename(folderPojo);
 
-        Map<String, String> body = new HashMap<>();
-        body.put("name", folder.getName());
-
-        return new FolderResource(folder, body);
+        return FolderResourceCreator.getResource(folder);
     }
 
     @DeleteMapping("/folders/{folderId}")
