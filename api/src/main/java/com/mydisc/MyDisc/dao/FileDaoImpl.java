@@ -18,13 +18,12 @@ import java.util.UUID;
 public class FileDaoImpl implements FileDao {
 
     private EntityManager entityManager;
-
-    @Autowired
     private FolderDao folderDao;
 
     @Autowired
-    public FileDaoImpl(EntityManager entityManager) {
+    public FileDaoImpl(EntityManager entityManager, FolderDao folderDao) {
         this.entityManager = entityManager;
+        this.folderDao = folderDao;
     }
 
     @Override

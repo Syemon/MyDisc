@@ -21,11 +21,14 @@ import java.util.*;
 @RequestMapping("/api")
 public class FileController {
 
-    @Autowired
     private FileService fileService;
+    private FolderService folderService;
 
     @Autowired
-    private FolderService folderService;
+    public FileController(FileService fileService, FolderService folderService) {
+        this.fileService = fileService;
+        this.folderService = folderService;
+    }
 
     @GetMapping(value = "/folders/root/files/{fileId}", produces = { "application/hal+json" })
     public FileResource get(@PathVariable("fileId") UUID fileId) {

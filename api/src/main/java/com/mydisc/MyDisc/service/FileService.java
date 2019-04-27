@@ -20,11 +20,14 @@ import java.util.*;
 @Service
 public class FileService {
 
-    @Autowired
+    private FileDao fileDao;
     private FileStorageService fileStorageService;
 
     @Autowired
-    private FileDao fileDao;
+    public FileService(FileDao fileDao, FileStorageService fileStorageService) {
+        this.fileDao = fileDao;
+        this.fileStorageService = fileStorageService;
+    }
 
     @Transactional
     public ResponseEntity<Resource> download(UUID fileId) {
