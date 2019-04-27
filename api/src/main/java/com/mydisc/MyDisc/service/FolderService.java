@@ -1,29 +1,70 @@
 package com.mydisc.MyDisc.service;
 
+import com.mydisc.MyDisc.dao.FolderDao;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.entity.FolderPojo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface FolderService {
-    public List<Folder> findAll();
+@Service
+public class FolderService {
 
-    public Folder findById(UUID id);
+    private FolderDao folderDao;
 
-    public Folder save(FolderPojo folderPojo);
+    @Autowired
+    public FolderService(FolderDao folderDao) {
+        this.folderDao = folderDao;
+    }
 
-    public Folder rename(FolderPojo folderPojo);
+    @Transactional
+    public boolean exists(UUID folderId) {
+        return this.folderDao.exists(folderId);
+    }
 
-    public void delete(UUID id);
+    @Transactional
+    public List<Folder> findAll() {
+        return this.folderDao.findAll();
+    }
 
-    public List<Folder> findChildren();
+    @Transactional
+    public Folder findById(UUID id) {
+        return this.folderDao.findById(id);
+    }
 
-    public List<Folder> findChildren(UUID folderId);
+    public List<Folder> findChildren() {
+        return this.folderDao.findChildren();
+    }
 
-    void move(UUID folderId);
+    public List<Folder> findChildren(UUID folderId) {
+        return this.folderDao.findChildren(folderId);
+    }
 
-    void move(UUID folderId, UUID targetFolderId);
+    @Transactional
+    public Folder save(FolderPojo folderPojo) {
+        return this.folderDao.save(folderPojo);
+    }
 
-    boolean exists(UUID folderId);
+    @Transactional
+    public Folder rename(FolderPojo folderPojo) {
+        return this.folderDao.update(folderPojo);
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        this.folderDao.deleteById(id);
+    }
+
+    @Transactional
+    public void move(UUID folderId) {
+        this.folderDao.move(folderId);
+    }
+
+    @Transactional
+    public void move(UUID folderId, UUID targetFolderId) {
+        this.folderDao.move(folderId, targetFolderId);
+    }
 }
