@@ -20,7 +20,6 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MyDiscApplication.class)
 public class FolderDaoTests {
-
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, String> body = new HashMap<>();
 

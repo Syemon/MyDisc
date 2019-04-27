@@ -32,7 +32,7 @@ public class FolderResource extends ResourceSupport {
 
         add(linkTo(methodOn(FolderController.class).get(id)).withSelfRel());
 
-        if (this.hasParent(folder)) {
+        if (folder.hasParent()) {
             add(linkTo(methodOn(FolderController.class).get(folder.getParent().getId())).withRel("parent"));
             add(linkTo(methodOn(FolderController.class).listChildren(id)).withRel("children"));
             add(linkTo(methodOn(FileController.class).list(id)).withRel("files"));
@@ -56,12 +56,5 @@ public class FolderResource extends ResourceSupport {
 
     public void setBody(Map<String, String> body) {
         this.body = body;
-    }
-
-    private boolean hasParent(Folder folder) {
-        if (null == folder.getParent()) {
-            return false;
-        }
-        return true;
     }
 }

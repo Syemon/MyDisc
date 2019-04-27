@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FileResourceBodyProcessor {
-
     public static Map<String, String> getFullFileBody(File file) {
         Map<String, String> body = new HashMap<>();
         body.put("id", file.getId().toString());

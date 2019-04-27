@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(FolderController.class)
 public class FolderControllerTests {
-
     @Autowired
     private MockMvc mockMvc;
 

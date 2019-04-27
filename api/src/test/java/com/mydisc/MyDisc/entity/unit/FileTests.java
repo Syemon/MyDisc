@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class FileTests {
-
     private File file;
 
     @Before

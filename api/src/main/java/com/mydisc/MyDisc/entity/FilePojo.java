@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class FilePojo {
-
     @NotNull
     private UUID folderId;
 

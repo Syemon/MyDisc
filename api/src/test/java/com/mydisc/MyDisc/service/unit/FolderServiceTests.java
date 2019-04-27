@@ -20,7 +20,6 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringRunner.class)
 @WebMvcTest(FolderService.class)
 public class FolderServiceTests {
-
     @MockBean
     private FolderDao folderDao;
 

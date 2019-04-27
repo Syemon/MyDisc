@@ -21,7 +21,6 @@ import java.util.Map;
 
 @Service
 public class FileStorageService {
-
     private final Path fileStorageLocation;
 
     @Autowired

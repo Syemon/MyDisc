@@ -16,7 +16,6 @@ import java.util.UUID;
 
 @Repository
 public class FileDaoImpl implements FileDao {
-
     private EntityManager entityManager;
     private FolderDao folderDao;
 

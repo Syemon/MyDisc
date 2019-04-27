@@ -22,7 +22,6 @@ import java.util.UUID;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MyDiscApplication.class)
 public class FileDaoTests {
-
     @Autowired
     private EntityManager entityManager;
 

@@ -21,7 +21,6 @@ import java.util.Map;
 @SpringBootTest(classes = MyDiscApplication.class)
 @AutoConfigureMockMvc()
 public class FileStorageServiceTests {
-
     @Autowired
     private FileStorageService fileStorageService;
 

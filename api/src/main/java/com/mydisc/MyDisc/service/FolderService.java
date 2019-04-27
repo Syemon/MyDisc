@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Service
 public class FolderService {
-
     private FolderDao folderDao;
 
     @Autowired
@@ -35,10 +34,12 @@ public class FolderService {
         return this.folderDao.findById(id);
     }
 
+    @Transactional
     public List<Folder> findChildren() {
         return this.folderDao.findChildren();
     }
 
+    @Transactional
     public List<Folder> findChildren(UUID folderId) {
         return this.folderDao.findChildren(folderId);
     }

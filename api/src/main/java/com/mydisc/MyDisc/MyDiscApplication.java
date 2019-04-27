@@ -10,10 +10,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 		FileStorageProperties.class
 })
 public class MyDiscApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(MyDiscApplication.class, args);
 	}
-
 }
 

@@ -28,7 +28,6 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringRunner.class)
 @WebMvcTest(FileService.class)
 public class FileServiceTests {
-
     @MockBean
     private FileDao fileDao;
 

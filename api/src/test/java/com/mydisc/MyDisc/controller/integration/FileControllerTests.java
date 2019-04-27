@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = MyDiscApplication.class)
 @AutoConfigureMockMvc()
 public class FileControllerTests {
-
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, String> body = new HashMap<>();
 

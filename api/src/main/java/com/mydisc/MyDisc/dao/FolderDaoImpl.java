@@ -13,7 +13,6 @@ import java.util.UUID;
 
 @Repository
 public class FolderDaoImpl implements FolderDao {
-
     private EntityManager entityManager;
 
     @Autowired

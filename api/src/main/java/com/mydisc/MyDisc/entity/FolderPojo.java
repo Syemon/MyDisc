@@ -3,7 +3,6 @@ package com.mydisc.MyDisc.entity;
 import java.util.UUID;
 
 public class FolderPojo {
-
     private UUID id;
     private String parentId;
     private String name;

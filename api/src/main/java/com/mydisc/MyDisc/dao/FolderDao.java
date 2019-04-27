@@ -8,18 +8,17 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FolderDao {
-
     boolean exists(UUID folderId);
 
-    public List<Folder> findAll();
+    List<Folder> findAll();
 
-    public Folder findById(UUID id);
+    Folder findById(UUID id);
 
-    public Folder save(FolderPojo folderPojo);
+    Folder save(FolderPojo folderPojo);
 
-    public Folder update(FolderPojo folderPojo);
+    Folder update(FolderPojo folderPojo);
 
-    public void deleteById(UUID id);
+    void deleteById(UUID id);
 
     List<Folder> findChildren();
 

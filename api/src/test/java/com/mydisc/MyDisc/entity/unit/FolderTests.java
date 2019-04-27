@@ -5,22 +5,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class FolderTests {
-
     private Folder folder;
-
-    @Autowired
-    private EntityManager entityManager;
 
     @Before
     public void setUp() {
@@ -93,5 +85,20 @@ public class FolderTests {
         folder.addChild(child);
 
         Assert.assertTrue(folder.hasChildren());
+    }
+
+    @Test
+    public void testHasParent_WhenNot_ReturnFalse() {
+        Folder folder = new Folder("folder");
+
+        Assert.assertFalse(folder.hasParent());
+    }
+
+    @Test
+    public void testHasParent_WhenHas_ReturnTrue() {
+        Folder folder = new Folder("folder");
+        folder.setParent(this.folder);
+
+        Assert.assertTrue(folder.hasParent());
     }
 }

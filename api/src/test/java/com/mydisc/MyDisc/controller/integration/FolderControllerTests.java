@@ -26,7 +26,6 @@ import java.util.*;
 @SpringBootTest(classes = MyDiscApplication.class)
 @AutoConfigureMockMvc()
 public class FolderControllerTests {
-
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, String> body = new HashMap<>();
 

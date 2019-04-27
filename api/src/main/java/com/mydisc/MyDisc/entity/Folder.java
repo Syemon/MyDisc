@@ -10,7 +10,6 @@ import java.util.*;
 @Entity
 @Table(name="folder")
 public class Folder {
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
@@ -98,6 +97,10 @@ public class Folder {
         } else {
             return true;
         }
+    }
+
+    public boolean hasParent() {
+        return null != this.getParent();
     }
 
     @Override
