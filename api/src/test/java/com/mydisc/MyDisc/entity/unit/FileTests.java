@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -29,7 +28,6 @@ public class FileTests {
     }
 
     @Test
-    @Transactional
     public void testFolderRelation() {
         Folder folder = new Folder("folder");
         this.file.setFolder(folder);
@@ -38,7 +36,6 @@ public class FileTests {
     }
 
     @Test
-    @Transactional
     public void testType() {
         String type = "image/jpeg";
         this.file.setType(type);
@@ -60,5 +57,19 @@ public class FileTests {
         this.file.setDeleted(isDeleted);
 
         Assert.assertEquals(isDeleted, file.isDeleted());
+    }
+
+    @Test
+    public void testHasFolder_WhenNot_ReturnFalse() {
+        Assert.assertFalse(this.file.hasFolder());
+    }
+
+    @Test
+    public void testHasFolder_WhenHas_ReturnTrue() {
+        Folder folder = new Folder("folder");
+
+        file.setFolder(folder);
+
+        Assert.assertTrue(file.hasFolder());
     }
 }

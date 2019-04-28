@@ -4,9 +4,9 @@ import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
 import com.mydisc.MyDisc.resource.FileResource;
+import com.mydisc.MyDisc.resource.FileResourceCreator;
 import com.mydisc.MyDisc.service.FileService;
 import com.mydisc.MyDisc.service.FolderService;
-import com.mydisc.MyDisc.utils.FileResourceBodyProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.hateoas.Resources;
@@ -35,10 +35,9 @@ public class FileController {
             throw new FolderNotFoundException("File was not found");
         }
 
-        File resultFile = fileService.findById(fileId);
-        Map<String, String> body = FileResourceBodyProcessor.getFullFileBody(resultFile);
+        File file = fileService.findById(fileId);
 
-        return new FileResource(resultFile, body);
+        return FileResourceCreator.getResource(file);
     }
 
     @GetMapping(value = "/folders/{folderId}/files/{fileId}", produces = { "application/hal+json" })
@@ -50,10 +49,10 @@ public class FileController {
             throw new FolderNotFoundException("File was not found");
         }
 
-        File resultFile = fileService.findById(folderId, fileId);
-        Map<String, String> body = FileResourceBodyProcessor.getFullFileBody(resultFile);
+        File file = fileService.findById(folderId, fileId);
 
-        return new FileResource(resultFile, body);
+        return FileResourceCreator.getResource(file);
+
     }
 
     @GetMapping(value = "/downloads/{fileId}", produces = { "application/hal+json" })
@@ -68,9 +67,10 @@ public class FileController {
     @GetMapping(value = "/folders/root/files", produces = { "application/hal+json" })
     public ResponseEntity<Resources<FileResource>> list() {
         List<File> files = fileService.list();
-        Resources<FileResource> resources = fileService.getFileResources(files);
 
-        return ResponseEntity.ok(resources);
+        return ResponseEntity.ok(
+                FileResourceCreator.getResources(files)
+        );
     }
 
     @GetMapping(value = "/folders/{folderId}/files", produces = { "application/hal+json" })
@@ -80,17 +80,17 @@ public class FileController {
         }
 
         List<File> files = fileService.list(folderId);
-        Resources<FileResource> resources = fileService.getFileResources(files);
 
-        return ResponseEntity.ok(resources);
+        return ResponseEntity.ok(
+                FileResourceCreator.getResources(files)
+        );
     }
 
     @PostMapping(value = "/folders/root/files", produces = { "application/hal+json" })
     public FileResource upload(@RequestPart("file")MultipartFile file) {
         File resultFile = fileService.upload(file);
-        Map<String, String> body = FileResourceBodyProcessor.getFullFileBody(resultFile);
 
-        return new FileResource(resultFile, body);
+        return FileResourceCreator.getResource(resultFile);
     }
 
     @PostMapping(value = "/folders/{folderId}/files", produces = { "application/hal+json" })
@@ -100,9 +100,8 @@ public class FileController {
         }
 
         File resultFile = fileService.upload(folderId, file);
-        Map<String, String> body = FileResourceBodyProcessor.getFullFileBody(resultFile);
 
-        return new FileResource(resultFile, body);
+        return FileResourceCreator.getResource(resultFile);
     }
 
     @PatchMapping(value = "/folders/root/files/{fileId}/move")

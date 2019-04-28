@@ -92,4 +92,8 @@ public class File {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+    public boolean hasFolder() {
+        return null != this.getFolder();
+    }
 }

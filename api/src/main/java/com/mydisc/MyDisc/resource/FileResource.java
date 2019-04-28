@@ -22,7 +22,7 @@ public class FileResource extends ResourceSupport {
 
         UUID id = file.getId();
 
-        if (this.hasFolder(file)) {
+        if (file.hasFolder()) {
             add(linkTo(methodOn(FileController.class).get(file.getFolder().getId(), id)).withSelfRel());
             add(linkTo(methodOn(FolderController.class).get(file.getFolder().getId())).withRel("folder"));
             add(linkTo(methodOn(FileController.class).delete(file.getFolder().getId(), id)).withRel("delete"));
@@ -42,12 +42,5 @@ public class FileResource extends ResourceSupport {
 
     public void setBody(Map<String, String> body) {
         this.body = body;
-    }
-
-    private boolean hasFolder(File file) {
-        if (null == file.getFolder()) {
-            return false;
-        }
-        return true;
     }
 }
