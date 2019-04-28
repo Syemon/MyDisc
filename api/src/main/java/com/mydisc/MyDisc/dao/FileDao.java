@@ -30,4 +30,6 @@ public interface FileDao {
     boolean exists(UUID fileId);
 
     boolean exists(UUID folderId, UUID fileId);
+
+    boolean isEnoughSpace(MultipartFile file);
 }

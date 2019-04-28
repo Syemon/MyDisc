@@ -117,4 +117,9 @@ public class FileService {
     public void move(UUID folderId, UUID fileId, FilePojo filePojo) {
         fileDao.move(folderId, fileId, filePojo);
     }
+
+    @Transactional
+    public boolean isEnoughSpace(MultipartFile file) {
+        return fileDao.isEnoughSpace(file);
+    }
 }

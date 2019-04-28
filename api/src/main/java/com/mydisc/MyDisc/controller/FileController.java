@@ -3,6 +3,7 @@ package com.mydisc.MyDisc.controller;
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.exception.FolderNotFoundException;
+import com.mydisc.MyDisc.exception.NotEnoughDiscSpaceException;
 import com.mydisc.MyDisc.resource.FileResource;
 import com.mydisc.MyDisc.resource.FileResourceCreator;
 import com.mydisc.MyDisc.service.FileService;
@@ -88,6 +89,10 @@ public class FileController {
 
     @PostMapping(value = "/folders/root/files", produces = { "application/hal+json" })
     public FileResource upload(@RequestPart("file")MultipartFile file) {
+        if (!fileService.isEnoughSpace(file)) {
+            throw new NotEnoughDiscSpaceException("You don't have enough space");
+        }
+
         File resultFile = fileService.upload(file);
 
         return FileResourceCreator.getResource(resultFile);
@@ -97,6 +102,9 @@ public class FileController {
     public FileResource upload(@PathVariable("folderId") UUID folderId, @RequestPart("file")MultipartFile file) {
         if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Folder was not found");
+        }
+        if (!fileService.isEnoughSpace(file)) {
+            throw new NotEnoughDiscSpaceException("You don't have enough space");
         }
 
         File resultFile = fileService.upload(folderId, file);

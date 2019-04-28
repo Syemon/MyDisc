@@ -66,6 +66,7 @@ public class FileControllerTests {
 
     @Test
     public void testCreate_WithRootFolder() throws Exception {
+        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
         when(this.fileService.upload(any(MultipartFile.class))).thenReturn(this.file);
 
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
@@ -88,6 +89,7 @@ public class FileControllerTests {
 
     @Test
     public void testCreate_WithSomeFolder() throws Exception {
+        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
         when(this.folderService.exists(any(UUID.class))).thenReturn(true);
         when(this.fileService.upload(any(UUID.class), any(MultipartFile.class))).thenReturn(this.file);
 
@@ -319,5 +321,37 @@ public class FileControllerTests {
 
         verify(this.fileService, times(1)).delete(
                 any(UUID.class));
+    }
+
+    @Test
+    public void testUpload_WhenNotEnoughSpaceAndUploadToRoot_ReturnError() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "Spring Framework".getBytes());
+        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
+                .file(multipartFile))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("You don't have enough space"));
+    }
+
+    @Test
+    public void testUpload_WhenNotEnoughSpaceAndUploadToFolder_ReturnError() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "Spring Framework".getBytes());
+        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
+        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/{folderId}/files",
+                this.folder.getId())
+                .file(multipartFile))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("You don't have enough space"));
     }
 }

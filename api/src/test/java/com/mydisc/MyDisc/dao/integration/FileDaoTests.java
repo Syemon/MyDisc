@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -211,6 +212,56 @@ public class FileDaoTests {
         Assert.assertFalse(result);
     }
 
+    @Test
+    @Transactional
+    public void testIsEnoughSpace_WhenIs_ReturnTrue() {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", new byte[1024 * 1024 * 30]);
+
+        this.getFileWithGivenSize(5000000L);
+        this.getFileWithGivenSize(9000000L);
+
+        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    @Transactional
+    public void testIsEnoughSpace_WhenIsAndEmptyDisc_ReturnTrue() {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", new byte[1024 * 1024 * 30]);
+
+        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    @Transactional
+    public void testIsEnoughSpace_WhenNotAndEmptyDisc_ReturnFalse() {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", new byte[1024 * 1024 * 51]);
+
+        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    @Transactional
+    public void testIsEnoughSpace_WhenNot_ReturnFalse() {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", new byte[1024 * 1024 * 51]);
+
+        this.getFileWithGivenSize(24000000L);
+        this.getFileWithGivenSize(24000000L);
+
+        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+
+        Assert.assertFalse(result);
+    }
+
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
@@ -229,6 +280,21 @@ public class FileDaoTests {
         file.setStorageName("qweqweqweqwe123");
         file.setType("text/plain");
         file.setSize(123L);
+        entityManager.unwrap(Session.class);
+        entityManager.persist(file);
+        entityManager.flush();
+        entityManager.refresh(file);
+
+        return file;
+    }
+
+    @Transactional
+    private File getFileWithGivenSize(Long size) {
+        File file = new File();
+        file.setName("file");
+        file.setStorageName("qweqweqweqwe123");
+        file.setType("text/plain");
+        file.setSize(size);
         entityManager.unwrap(Session.class);
         entityManager.persist(file);
         entityManager.flush();

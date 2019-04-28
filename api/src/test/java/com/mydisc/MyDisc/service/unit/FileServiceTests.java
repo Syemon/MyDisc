@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.Resources;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,5 +182,27 @@ public class FileServiceTests {
         boolean result = this.fileService.exists(UUID.randomUUID(), UUID.randomUUID());
 
         Assert.assertFalse(result);
+    }
+
+    @Test
+    public void testIsEnoughSpace_WhenNot_ReturnFalse() {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "Spring Framework".getBytes());
+        when(this.fileDao.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
+
+        boolean result = this.fileService.isEnoughSpace(multipartFile);
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void testIsEnoughSpace_WhenEnough_ReturnTrue() {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "Spring Framework".getBytes());
+        when(this.fileDao.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
+
+        boolean result = this.fileService.isEnoughSpace(multipartFile);
+
+        Assert.assertTrue(result);
     }
 }

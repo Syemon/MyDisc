@@ -84,6 +84,17 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ApiErrorResponse> handleException(NotEnoughDiscSpaceException exc) {
+        ApiErrorResponse error = new ApiErrorResponse();
+
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setMessage(exc.getMessage());
+        error.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ApiErrorResponse> handleException(Exception exc) {
         ApiErrorResponse error = new ApiErrorResponse();
 

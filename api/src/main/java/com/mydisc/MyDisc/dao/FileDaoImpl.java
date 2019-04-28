@@ -3,6 +3,7 @@ package com.mydisc.MyDisc.dao;
 import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.FilePojo;
 import com.mydisc.MyDisc.entity.Folder;
+import com.mydisc.MyDisc.property.FileStorageProperties;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,17 @@ import java.util.UUID;
 @Repository
 public class FileDaoImpl implements FileDao {
     private EntityManager entityManager;
+    private FileStorageProperties fileStorageProperties;
     private FolderDao folderDao;
 
     @Autowired
-    public FileDaoImpl(EntityManager entityManager, FolderDao folderDao) {
+    public FileDaoImpl(
+            EntityManager entityManager,
+            FileStorageProperties fileStorageProperties,
+            FolderDao folderDao
+    ) {
         this.entityManager = entityManager;
+        this.fileStorageProperties = fileStorageProperties;
         this.folderDao = folderDao;
     }
 
@@ -175,5 +182,20 @@ public class FileDaoImpl implements FileDao {
 
         file.setFolder(folder);
         session.save(file);
+    }
+
+    @Override
+    public boolean isEnoughSpace(MultipartFile file) {
+        Session session = entityManager.unwrap(Session.class);
+
+        Query query = session.createQuery(
+                "SELECT COALESCE(SUM(size), 0) + :size " +
+                        "FROM File");
+
+        Object size = query.
+                setParameter("size", file.getSize()).
+                getSingleResult();
+
+        return Long.valueOf(String.valueOf(size)) < fileStorageProperties.getStorageSpace();
     }
 }
