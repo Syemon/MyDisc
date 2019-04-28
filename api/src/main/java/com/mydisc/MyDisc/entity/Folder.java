@@ -1,6 +1,8 @@
 package com.mydisc.MyDisc.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -27,6 +29,16 @@ public class Folder {
     @Nullable
     @OneToMany(mappedBy="parent", cascade={CascadeType.PERSIST, CascadeType.MERGE})
     private List<Folder> children;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
     public Folder() {
 
@@ -70,6 +82,22 @@ public class Folder {
         if (!parent.children.contains(this)) {
             parent.getChildren().add(this);
         }
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public List<Folder> getChildren() {

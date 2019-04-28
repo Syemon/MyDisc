@@ -40,16 +40,16 @@ public class FolderResourceCreatorTests {
     public void testGetResource_WhenNoParameter_ReturnRootFolderResource() {
         FolderResource resource = FolderResourceCreator.getResource();
 
-        Assert.assertSame("root", resource.getBody().get("name"));
-        Assert.assertSame("root", resource.getBody().get("id"));
+        Assert.assertSame("root", resource.getBody().getName());
+        Assert.assertSame("root", resource.getBody().getId());
     }
 
     @Test
     public void testGetResource_WhenFolderParameter_ReturnFolderResource() {
         FolderResource resource = FolderResourceCreator.getResource(this.folder);
 
-        Assert.assertSame("Lorem ipsum", resource.getBody().get("name"));
-        Assert.assertEquals(this.folderId.toString(), resource.getBody().get("id"));
+        Assert.assertSame("Lorem ipsum", resource.getBody().getName());
+        Assert.assertEquals(this.folderId.toString(), resource.getBody().getId());
     }
 
     @Test
