@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.Resources;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +41,6 @@ public class FileServiceTests {
 
     @MockBean
     private File file;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @Before
     public void setFile() {

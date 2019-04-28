@@ -67,7 +67,6 @@ public class FolderControllerTests {
     @Transactional
     public void testDeleteParent() throws Exception {
         Folder parent = getFolder("folder");
-        Folder children = getFolder("folder");
 
         this.mockMvc.perform(delete("/api/folders/{folderId}", parent.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -77,7 +76,6 @@ public class FolderControllerTests {
     @Test
     @Transactional
     public void testDeleteChildren() throws Exception {
-        Folder parent = getFolder("folder");
         Folder children = getFolder("folder");
 
         this.mockMvc.perform(delete("/api/folders/{folderId}", children.getId())

@@ -1,7 +1,6 @@
 package com.mydisc.MyDisc.service.unit;
 
 import com.mydisc.MyDisc.dao.FolderDao;
-import com.mydisc.MyDisc.entity.File;
 import com.mydisc.MyDisc.entity.Folder;
 import com.mydisc.MyDisc.service.FolderService;
 import org.junit.Assert;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.UUID;
 
@@ -28,12 +26,6 @@ public class FolderServiceTests {
 
     @MockBean
     private Folder folder;
-
-    @MockBean
-    private File file;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @Test
     public void testMove_ToRootFolder() {

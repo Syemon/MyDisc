@@ -115,9 +115,6 @@ public class FileControllerTests {
         when(this.fileService.exists(any(UUID.class))).thenReturn(true);
         when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
 
-        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
-                "text/plain", "Spring Framework".getBytes());
-
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/folders/root/files/{fileId}",
                 this.file.getId())
                 .contentType(MediaType.APPLICATION_JSON))
