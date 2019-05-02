@@ -16,6 +16,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -262,6 +265,33 @@ public class FileDaoTests {
         Assert.assertFalse(result);
     }
 
+
+    @Test
+    @Transactional
+    public void testDelete_WhenInRoot() throws IOException {
+        Session session = entityManager.unwrap(Session.class);
+
+        File file = this.getFileWithStorage();
+
+        this.fileDao.delete(file.getId());
+        session.flush();
+
+        Assert.assertFalse(this.fileDao.exists(file.getId()));
+    }
+
+    @Test
+    @Transactional
+    public void testDelete_WhenInFolder() throws IOException {
+        Session session = entityManager.unwrap(Session.class);
+
+        File file = this.getFileWithFolderRelation();
+
+        this.fileDao.delete(file.getId());
+        session.flush();
+
+        Assert.assertFalse(this.fileDao.exists(file.getId()));
+    }
+
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
@@ -278,6 +308,24 @@ public class FileDaoTests {
         File file = new File();
         file.setName("file");
         file.setStorageName("qweqweqweqwe123");
+        file.setType("text/plain");
+        file.setSize(123L);
+        entityManager.unwrap(Session.class);
+        entityManager.persist(file);
+        entityManager.flush();
+        entityManager.refresh(file);
+
+        return file;
+    }
+
+    @Transactional
+    private File getFileWithStorage() throws IOException {
+        String storageName = UUID.randomUUID().toString();
+        Files.createFile(Paths.get(String.format("test_uploads/%s", storageName)));
+        File file = new File();
+
+        file.setName("file");
+        file.setStorageName(storageName);
         file.setType("text/plain");
         file.setSize(123L);
         entityManager.unwrap(Session.class);

@@ -58,6 +58,13 @@ public class FileService {
         fileStorageService.deleteFile(storageName);
     }
 
+    public void deleteAllInFolder(UUID folderId) {
+        List<File> files = this.list(folderId);
+        for (File file: files) {
+            this.delete(file.getId());
+        }
+    }
+
     @Transactional
     public boolean exists(UUID fileId) {
         return this.fileDao.exists(fileId);

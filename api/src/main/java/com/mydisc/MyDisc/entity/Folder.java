@@ -1,9 +1,11 @@
 package com.mydisc.MyDisc.entity;
 
+import com.mydisc.MyDisc.event_listener.FolderEventListener;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +13,7 @@ import java.util.*;
 
 @Entity
 @Table(name="folder")
+@EntityListeners(FolderEventListener.class)
 public class Folder {
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -22,12 +25,12 @@ public class Folder {
     @Column(name="name")
     private String name;
 
-    @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade={CascadeType.MERGE})
     @JoinColumn(name="parent_id")
     private Folder parent;
 
     @Nullable
-    @OneToMany(mappedBy="parent", cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy="parent", cascade = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
     private List<Folder> children;
 
     @CreationTimestamp

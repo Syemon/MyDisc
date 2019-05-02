@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class FolderDaoImpl implements FolderDao {
@@ -110,11 +109,9 @@ public class FolderDaoImpl implements FolderDao {
     public void deleteById(UUID id) {
         Session session = entityManager.unwrap(Session.class);
 
-        Query query = session.createQuery(
-                "delete from Folder where id=:folderId");
+        Folder folder = this.findById(id);
 
-        query.setParameter("folderId", id)
-                .executeUpdate();
+        session.remove(folder);
     }
 
     @Override
