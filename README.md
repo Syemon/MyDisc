@@ -4,11 +4,11 @@ MyDisc is an desktop and web aplication, which allows to create folders and stor
 The project is dockerized, implements HATEOS architecture and is hosted on GoogleCloud. **Currently only API is available.**
 
 ## Installation
-To install MyDisc you have to have docker-compose installed. Here is a documentation how to do it.
+To install MyDisc you have to have docker-compose installed. Here is a [documentation](https://docs.docker.com/compose/install/) how to do it.
 
-Pull project from the repository: `git clone https://github.com/Syemon/MyDisc.git`  
-Enter created project: `cd MyDisc`  
-Run docker containers: `docker-compose up`.  
+* Pull project from the repository: `git clone https://github.com/Syemon/MyDisc.git`  
+* Enter created project: `cd MyDisc`  
+* Run docker containers: `docker-compose up`.  
     
 ## Documentation
 [MyDisc wiki](https://github.com/Syemon/MyDisc/wiki)  
