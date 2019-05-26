@@ -30,9 +30,9 @@ public class FileService {
 
     @Transactional
     public ResponseEntity<Resource> download(UUID fileId) {
-        File file = this.findById(fileId);
+        File file = findById(fileId);
 
-        Resource fileResource =  this.fileStorageService.loadFileAsResource(
+        Resource fileResource =  fileStorageService.loadFileAsResource(
                 file.getStorageName());
 
         return ResponseEntity.ok()
@@ -59,20 +59,20 @@ public class FileService {
     }
 
     public void deleteAllInFolder(UUID folderId) {
-        List<File> files = this.list(folderId);
+        List<File> files = list(folderId);
         for (File file: files) {
-            this.delete(file.getId());
+            delete(file.getId());
         }
     }
 
     @Transactional
     public boolean exists(UUID fileId) {
-        return this.fileDao.exists(fileId);
+        return fileDao.exists(fileId);
     }
 
     @Transactional
     public boolean exists(UUID folderId, UUID fileId) {
-        return this.fileDao.exists(folderId, fileId);
+        return fileDao.exists(folderId, fileId);
     }
 
     @Transactional

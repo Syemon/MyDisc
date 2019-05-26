@@ -15,7 +15,7 @@ public class FolderEventListener {
 
     @PreRemove
     public void onFolderDelete(Folder folder) {
-        AutowireHelper.autowire(this, this.fileService);
+        AutowireHelper.autowire(this, fileService);
         fileService.deleteAllInFolder(folder.getId());
     }
 }

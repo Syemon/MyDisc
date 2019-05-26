@@ -29,33 +29,33 @@ public class FolderServiceTests {
 
     @Test
     public void testMove_ToRootFolder() {
-        this.folderService.move(UUID.randomUUID());
+        folderService.move(UUID.randomUUID());
 
-        verify(this.folderDao, times(1)).move(any(UUID.class));
+        verify(folderDao, times(1)).move(any(UUID.class));
     }
 
     @Test
     public void testMove_ToAnotherFolder() {
-        this.folderService.move(UUID.randomUUID(), UUID.randomUUID());
+        folderService.move(UUID.randomUUID(), UUID.randomUUID());
 
-        verify(this.folderDao, times(1)).move(
+        verify(folderDao, times(1)).move(
                 any(UUID.class), any(UUID.class));
     }
 
     @Test
     public void testExists_WhenExists_ReturnTrue() {
-        when(this.folderDao.exists(any(UUID.class))).thenReturn(true);
+        when(folderDao.exists(any(UUID.class))).thenReturn(true);
 
-        boolean result = this.folderService.exists(UUID.randomUUID());
+        boolean result = folderService.exists(UUID.randomUUID());
 
         Assert.assertTrue(result);
     }
 
     @Test
     public void testExists_WhenNotExists_ReturnFalse() {
-        when(this.folderDao.exists(any(UUID.class))).thenReturn(false);
+        when(folderDao.exists(any(UUID.class))).thenReturn(false);
 
-        boolean result = this.folderService.exists(UUID.randomUUID());
+        boolean result = folderService.exists(UUID.randomUUID());
 
         Assert.assertFalse(result);
     }

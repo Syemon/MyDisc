@@ -28,12 +28,12 @@ public class FolderResourceCreatorTests {
 
     @Before
     public void setUp() {
-        this.folders = new ArrayList<>();
-        this.folderId = UUID.randomUUID();
+        folders = new ArrayList<>();
+        folderId = UUID.randomUUID();
 
-        when(this.folder.getId()).thenReturn(this.folderId);
-        when(this.folder.getName()).thenReturn("Lorem ipsum");
-        this.folders.add(this.folder);
+        when(folder.getId()).thenReturn(folderId);
+        when(folder.getName()).thenReturn("Lorem ipsum");
+        folders.add(folder);
     }
 
     @Test
@@ -46,15 +46,15 @@ public class FolderResourceCreatorTests {
 
     @Test
     public void testGetResource_WhenFolderParameter_ReturnFolderResource() {
-        FolderResource resource = FolderResourceCreator.getResource(this.folder);
+        FolderResource resource = FolderResourceCreator.getResource(folder);
 
         Assert.assertSame("Lorem ipsum", resource.getBody().getName());
-        Assert.assertEquals(this.folderId.toString(), resource.getBody().getId());
+        Assert.assertEquals(folderId.toString(), resource.getBody().getId());
     }
 
     @Test
     public void testGetResources_WhenFoldersParameter_ReturnFolderResources() {
-        Resources<FolderResource> resources = FolderResourceCreator.getResources(this.folders);
+        Resources<FolderResource> resources = FolderResourceCreator.getResources(folders);
 
         Assert.assertFalse(resources.getContent().isEmpty());
     }

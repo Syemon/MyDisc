@@ -13,11 +13,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 public class FileResource extends ResourceSupport {
-    private File file;
     private Map<String, String> body;
 
     public FileResource(File file, Map<String, String> body) {
-        this.file = file;
         this.body = body;
 
         UUID id = file.getId();

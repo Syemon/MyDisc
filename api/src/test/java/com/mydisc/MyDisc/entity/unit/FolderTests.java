@@ -15,14 +15,14 @@ public class FolderTests {
 
     @Before
     public void setUp() {
-        this.folder  = new Folder();
+        folder  = new Folder();
     }
 
     @Test
     public void testName() {
         String name = "Lorem";
-        this.folder.setName(name);
-        Assert.assertEquals(name, this.folder.getName());
+        folder.setName(name);
+        Assert.assertEquals(name, folder.getName());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class FolderTests {
     @Test
     public void testHasParent_WhenHas_ReturnTrue() {
         Folder folder = new Folder("folder");
-        folder.setParent(this.folder);
+        folder.setParent(folder);
 
         Assert.assertTrue(folder.hasParent());
     }

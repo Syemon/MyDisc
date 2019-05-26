@@ -109,7 +109,7 @@ public class FolderDaoImpl implements FolderDao {
     public void deleteById(UUID id) {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = this.findById(id);
+        Folder folder = findById(id);
 
         session.remove(folder);
     }

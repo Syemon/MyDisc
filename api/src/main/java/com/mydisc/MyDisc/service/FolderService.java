@@ -21,51 +21,46 @@ public class FolderService {
 
     @Transactional
     public boolean exists(UUID folderId) {
-        return this.folderDao.exists(folderId);
-    }
-
-    @Transactional
-    public List<Folder> findAll() {
-        return this.folderDao.findAll();
+        return folderDao.exists(folderId);
     }
 
     @Transactional
     public Folder findById(UUID id) {
-        return this.folderDao.findById(id);
+        return folderDao.findById(id);
     }
 
     @Transactional
     public List<Folder> findChildren() {
-        return this.folderDao.findChildren();
+        return folderDao.findChildren();
     }
 
     @Transactional
     public List<Folder> findChildren(UUID folderId) {
-        return this.folderDao.findChildren(folderId);
+        return folderDao.findChildren(folderId);
     }
 
     @Transactional
     public Folder save(FolderPojo folderPojo) {
-        return this.folderDao.save(folderPojo);
+        return folderDao.save(folderPojo);
     }
 
     @Transactional
     public Folder rename(FolderPojo folderPojo) {
-        return this.folderDao.update(folderPojo);
+        return folderDao.update(folderPojo);
     }
 
     @Transactional
     public void delete(UUID id) {
-        this.folderDao.deleteById(id);
+        folderDao.deleteById(id);
     }
 
     @Transactional
     public void move(UUID folderId) {
-        this.folderDao.move(folderId);
+        folderDao.move(folderId);
     }
 
     @Transactional
     public void move(UUID folderId, UUID targetFolderId) {
-        this.folderDao.move(folderId, targetFolderId);
+        folderDao.move(folderId, targetFolderId);
     }
 }

@@ -50,7 +50,7 @@ public class FolderControllerTests {
 
     @Test
     public void testGetValidation_WithStringParameter() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}", "Lorem"))
+        mockMvc.perform(get("/api/folders/{serviceId}", "Lorem"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -59,7 +59,7 @@ public class FolderControllerTests {
 
     @Test
     public void testGetValidation_WithIntegerParameter() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}", 123))
+        mockMvc.perform(get("/api/folders/{serviceId}", 123))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -68,7 +68,7 @@ public class FolderControllerTests {
 
     @Test
     public void testGetValidation_WhenIdNotExists() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
+        mockMvc.perform(get("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -77,7 +77,7 @@ public class FolderControllerTests {
 
     @Test
     public void testDeleteValidation_WhenIdNotExists() throws Exception {
-        this.mockMvc.perform(delete("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
+        mockMvc.perform(delete("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -86,7 +86,7 @@ public class FolderControllerTests {
 
     @Test
     public void testListChildrenValidation_WhenIdNotExists() throws Exception {
-        this.mockMvc.perform(get("/api/folders/{serviceId}/children", "4555c2c6-5024-40cf-b15b-24548973cc14"))
+        mockMvc.perform(get("/api/folders/{serviceId}/children", "4555c2c6-5024-40cf-b15b-24548973cc14"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -95,11 +95,11 @@ public class FolderControllerTests {
 
     @Test
     public void testRenameValidation_WhenIdNotExists() throws Exception {
-        this.body = new HashMap<>();
-        this.body.put("name", "New Name");
+        body = new HashMap<>();
+        body.put("name", "New Name");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(patch("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14")
+        mockMvc.perform(patch("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14")
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -109,10 +109,10 @@ public class FolderControllerTests {
 
     @Test
     public void testRenameValidation_WhenHasEmptyBody() throws Exception {
-        when(this.folder.getId()).thenReturn(UUID.randomUUID());
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(folder.getId()).thenReturn(UUID.randomUUID());
+        when(folderService.findById(any(UUID.class))).thenReturn(folder);
 
-        this.mockMvc.perform(patch("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
+        mockMvc.perform(patch("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -121,14 +121,14 @@ public class FolderControllerTests {
 
     @Test
     public void testRenameValidation_WhenHasNoNameParameter() throws Exception {
-        this.body = new HashMap<>();
-        this.body.put("blank", "blank");
+        body = new HashMap<>();
+        body.put("blank", "blank");
         String jsonBody = mapper.writeValueAsString(body);
 
-        when(this.folder.getId()).thenReturn(UUID.randomUUID());
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
+        when(folder.getId()).thenReturn(UUID.randomUUID());
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
 
-        this.mockMvc.perform(patch("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14")
+        mockMvc.perform(patch("/api/folders/{serviceId}", "4555c2c6-5024-40cf-b15b-24548973cc14")
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -138,9 +138,9 @@ public class FolderControllerTests {
 
     @Test
     public void testMove_ToRoot_ValidateWithNotExistFolder() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+        when(folderService.findById(any(UUID.class))).thenReturn(null);
 
-        this.mockMvc.perform(patch(
+        mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/root",
                 "dad3cfda-5124-4389-b5c2-2433a380cc49"))
                 .andExpect(
@@ -151,9 +151,9 @@ public class FolderControllerTests {
 
     @Test
     public void testMove_ToAnotherFolder_ValidateWithNotExistFolder() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+        when(folderService.findById(any(UUID.class))).thenReturn(null);
 
-        this.mockMvc.perform(patch(
+        mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/{targetFolderId}",
                 "dad3cfda-5124-4389-b5c2-2433a380cc49", "333e1f7f-a06e-413f-a137-35d2b0c7d4c8"))
                 .andExpect(
@@ -167,10 +167,10 @@ public class FolderControllerTests {
         UUID folderId = UUID.fromString("333e1f7f-a06e-413f-a137-35d2b0c7d4c8");
         UUID targetFolderId = UUID.fromString("dad3cfda-5124-4389-b5c2-2433a380cc49");
 
-        when(this.folderService.exists(folderId)).thenReturn(true);
-        when(this.folderService.exists(targetFolderId)).thenReturn(false);
+        when(folderService.exists(folderId)).thenReturn(true);
+        when(folderService.exists(targetFolderId)).thenReturn(false);
 
-        this.mockMvc.perform(patch(
+        mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/{targetFolderId}",
                 folderId.toString(), targetFolderId.toString()))
                 .andExpect(
@@ -181,39 +181,39 @@ public class FolderControllerTests {
 
     @Test
     public void testMove_ToAnotherFolder() throws Exception {
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
 
-        this.mockMvc.perform(patch(
+        mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/{targetFolderId}",
                 UUID.randomUUID().toString(), UUID.randomUUID().toString()))
                 .andExpect(status().isNoContent());
 
-        verify(this.folderService, times(1)).move(
+        verify(folderService, times(1)).move(
                 any(UUID.class), any(UUID.class));
     }
 
     @Test
     public void testMove_ToRootFolder() throws Exception {
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
 
-        this.mockMvc.perform(patch(
+        mockMvc.perform(patch(
                 "/api/folders/{folderId}/move/root",
                 UUID.randomUUID().toString()))
                 .andExpect(status().isNoContent());
 
-        verify(this.folderService, times(1)).move(any(UUID.class));
+        verify(folderService, times(1)).move(any(UUID.class));
     }
 
     @Test
     public void testCreate_InAnotherFolder_ValidateWithNotExistFolder() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
+        when(folderService.findById(any(UUID.class))).thenReturn(null);
 
-        this.body = new HashMap<>();
-        this.body.put("name", "Lorem ipsum");
-        this.body.put("parentId", "dad3cfda-5124-4389-b5c2-2433a380cc49");
+        body = new HashMap<>();
+        body.put("name", "Lorem ipsum");
+        body.put("parentId", "dad3cfda-5124-4389-b5c2-2433a380cc49");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post(
+        mockMvc.perform(post(
                 "/api/folders")
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(
@@ -225,9 +225,9 @@ public class FolderControllerTests {
 
     @Test
     public void testCreate_InAnotherFolder_ValidateWithNoBody() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(this.folder);
+        when(folderService.findById(any(UUID.class))).thenReturn(folder);
 
-        this.mockMvc.perform(post(
+        mockMvc.perform(post(
                 "/api/folders"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -237,15 +237,15 @@ public class FolderControllerTests {
 
     @Test
     public void testCreate_InRoot() throws Exception {
-        when(this.folder.getName()).thenReturn("folder");
-        when(this.folder.getId()).thenReturn(UUID.randomUUID());
-        when(this.folderService.save(any(FolderPojo.class))).thenReturn(this.folder);
+        when(folder.getName()).thenReturn("folder");
+        when(folder.getId()).thenReturn(UUID.randomUUID());
+        when(folderService.save(any(FolderPojo.class))).thenReturn(folder);
 
-        this.body = new HashMap<>();
-        this.body.put("name", "folder");
+        body = new HashMap<>();
+        body.put("name", "folder");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post("/api/folders")
+        mockMvc.perform(post("/api/folders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())
@@ -261,18 +261,18 @@ public class FolderControllerTests {
     @Test
     public void testCreate_InAnotherFolder() throws Exception {
         Folder folder2 = mock(Folder.class);
-        when(this.folder.getName()).thenReturn("folder");
-        when(this.folder.getId()).thenReturn(UUID.randomUUID());
-        when(this.folder.getParent()).thenReturn(folder2);
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.folderService.save(any(FolderPojo.class))).thenReturn(this.folder);
+        when(folder.getName()).thenReturn("folder");
+        when(folder.getId()).thenReturn(UUID.randomUUID());
+        when(folder.getParent()).thenReturn(folder2);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(folderService.save(any(FolderPojo.class))).thenReturn(folder);
 
-        this.body = new HashMap<>();
-        this.body.put("name", "folder");
-        this.body.put("parentId", "dad3cfda-5124-4389-b5c2-2433a380cc49");
+        body = new HashMap<>();
+        body.put("name", "folder");
+        body.put("parentId", "dad3cfda-5124-4389-b5c2-2433a380cc49");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post("/api/folders")
+        mockMvc.perform(post("/api/folders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())

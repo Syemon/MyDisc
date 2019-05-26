@@ -28,22 +28,22 @@ public class FileResourceCreatorTests {
 
     @Before
     public void setUp() {
-        this.files = new ArrayList<>();
-        this.fileId = UUID.randomUUID();
+        files = new ArrayList<>();
+        fileId = UUID.randomUUID();
 
-        when(this.file.getId()).thenReturn(this.fileId);
-        when(this.file.getName()).thenReturn("Test");
-        when(this.file.getType()).thenReturn("text/plain");
-        when(this.file.getSize()).thenReturn(123L);
+        when(file.getId()).thenReturn(fileId);
+        when(file.getName()).thenReturn("Test");
+        when(file.getType()).thenReturn("text/plain");
+        when(file.getSize()).thenReturn(123L);
 
-        this.files.add(this.file);
+        files.add(file);
     }
 
     @Test
     public void testGetResource_ReturnFileResource() {
-        FileResource resource = FileResourceCreator.getResource(this.file);
+        FileResource resource = FileResourceCreator.getResource(file);
 
-        Assert.assertEquals(this.fileId.toString(), resource.getBody().get("id"));
+        Assert.assertEquals(fileId.toString(), resource.getBody().get("id"));
         Assert.assertSame("Test", resource.getBody().get("name"));
         Assert.assertSame("text/plain", resource.getBody().get("type"));
         Assert.assertEquals(String.valueOf(123L), resource.getBody().get("size"));
@@ -51,7 +51,7 @@ public class FileResourceCreatorTests {
 
     @Test
     public void testGetResources_ReturnFolderResources() {
-        Resources<FileResource> resources = FileResourceCreator.getResources(this.files);
+        Resources<FileResource> resources = FileResourceCreator.getResources(files);
 
         Assert.assertFalse(resources.getContent().isEmpty());
         for (FileResource resource: resources) {

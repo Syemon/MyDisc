@@ -13,7 +13,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class FolderResource extends ResourceSupport {
-    private Folder folder;
     private FolderBody body;
 
     public FolderResource(FolderBody body) {
@@ -25,7 +24,6 @@ public class FolderResource extends ResourceSupport {
     }
 
     public FolderResource(Folder folder, FolderBody body) {
-        this.folder = folder;
         this.body = body;
 
         UUID id = folder.getId();

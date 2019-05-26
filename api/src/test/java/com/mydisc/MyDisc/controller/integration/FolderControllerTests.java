@@ -37,10 +37,10 @@ public class FolderControllerTests {
 
     @Test
     public void testCreate() throws Exception {
-        this.body.put("name", "folder");
+        body.put("name", "folder");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(post("/api/folders")
+        mockMvc.perform(post("/api/folders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())
@@ -58,7 +58,7 @@ public class FolderControllerTests {
     public void testDelete() throws Exception {
         Folder folder = getFolder("folder");
 
-        this.mockMvc.perform(delete("/api/folders/{folderId}", folder.getId())
+        mockMvc.perform(delete("/api/folders/{folderId}", folder.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -68,7 +68,7 @@ public class FolderControllerTests {
     public void testDeleteParent() throws Exception {
         Folder parent = getFolder("folder");
 
-        this.mockMvc.perform(delete("/api/folders/{folderId}", parent.getId())
+        mockMvc.perform(delete("/api/folders/{folderId}", parent.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -78,7 +78,7 @@ public class FolderControllerTests {
     public void testDeleteChildren() throws Exception {
         Folder children = getFolder("folder");
 
-        this.mockMvc.perform(delete("/api/folders/{folderId}", children.getId())
+        mockMvc.perform(delete("/api/folders/{folderId}", children.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -90,10 +90,10 @@ public class FolderControllerTests {
         UUID folderId = folder.getId();
 
         String newName = "new Folder";
-        this.body.put("name", newName);
+        body.put("name", newName);
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(patch("/api/folders/{folderId}", folderId)
+        mockMvc.perform(patch("/api/folders/{folderId}", folderId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isOk())
@@ -118,10 +118,10 @@ public class FolderControllerTests {
         String childrenOneName = "children1";
         String childrenTwoName = "children2";
 
-        Folder parent = this.getFolder(parentName);
-        Folder children1 = this.getFolder(childrenOneName);
+        Folder parent = getFolder(parentName);
+        Folder children1 = getFolder(childrenOneName);
         children1.setParent(parent);
-        Folder children2 = this.getFolder(childrenTwoName);
+        Folder children2 = getFolder(childrenTwoName);
         children2.setParent(parent);
         entityManager.unwrap(Session.class);
         entityManager.persist(children1);
@@ -129,7 +129,7 @@ public class FolderControllerTests {
         entityManager.flush();
 
 
-        this.mockMvc.perform(get("/api/folders/{folderId}/children", parent.getId()))
+        mockMvc.perform(get("/api/folders/{folderId}/children", parent.getId()))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith("application/hal+json"))
@@ -143,10 +143,10 @@ public class FolderControllerTests {
         String childrenOneName = "children1";
         String childrenTwoName = "children2";
 
-        Folder parent = this.getFolder(parentName);
-        Folder children1 = this.getFolder(childrenOneName);
+        Folder parent = getFolder(parentName);
+        Folder children1 = getFolder(childrenOneName);
         children1.setParent(parent);
-        Folder children2 = this.getFolder(childrenTwoName);
+        Folder children2 = getFolder(childrenTwoName);
         children2.setParent(parent);
         entityManager.unwrap(Session.class);
         entityManager.persist(children1);
@@ -154,7 +154,7 @@ public class FolderControllerTests {
         entityManager.flush();
 
 
-        this.mockMvc.perform(get("/api/folders/root/children"))
+        mockMvc.perform(get("/api/folders/root/children"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith("application/hal+json"))
@@ -166,15 +166,15 @@ public class FolderControllerTests {
     public void testGet() throws Exception {
         String name = "folder";
 
-        Folder folder = this.getFolder(name);
-        Folder children = this.getFolder("children");
+        Folder folder = getFolder(name);
+        Folder children = getFolder("children");
         children.setParent(folder);
         entityManager.unwrap(Session.class);
         entityManager.persist(children);
         entityManager.flush();
 
 
-        this.mockMvc.perform(get("/api/folders/{folderId}", folder.getId()))
+        mockMvc.perform(get("/api/folders/{folderId}", folder.getId()))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith("application/hal+json"))
@@ -190,7 +190,7 @@ public class FolderControllerTests {
     public void testGetRoot() throws Exception {
         String name = "root";
 
-        this.mockMvc.perform(get("/api/folders/{folderId}", "root"))
+        mockMvc.perform(get("/api/folders/{folderId}", "root"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith("application/hal+json"))

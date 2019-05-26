@@ -16,21 +16,21 @@ public class FileTests {
 
     @Before
     public void setUp() {
-        this.file  = new File();
+        file  = new File();
     }
 
     @Test
     public void testName() {
         String name = "Lorem";
-        this.file.setName(name);
+        file.setName(name);
 
-        Assert.assertEquals(name, this.file.getName());
+        Assert.assertEquals(name, file.getName());
     }
 
     @Test
     public void testFolderRelation() {
         Folder folder = new Folder("folder");
-        this.file.setFolder(folder);
+        file.setFolder(folder);
 
         Assert.assertEquals(folder, file.getFolder());
     }
@@ -38,7 +38,7 @@ public class FileTests {
     @Test
     public void testType() {
         String type = "image/jpeg";
-        this.file.setType(type);
+        file.setType(type);
 
         Assert.assertEquals(type, file.getType());
     }
@@ -46,7 +46,7 @@ public class FileTests {
     @Test
     public void testSize() {
         long size = 4212;
-        this.file.setSize(size);
+        file.setSize(size);
 
         Assert.assertEquals(size, file.getSize());
     }
@@ -54,14 +54,14 @@ public class FileTests {
     @Test
     public void testDeleted() {
         boolean isDeleted = true;
-        this.file.setDeleted(isDeleted);
+        file.setDeleted(isDeleted);
 
         Assert.assertEquals(isDeleted, file.isDeleted());
     }
 
     @Test
     public void testHasFolder_WhenNot_ReturnFalse() {
-        Assert.assertFalse(this.file.hasFolder());
+        Assert.assertFalse(file.hasFolder());
     }
 
     @Test

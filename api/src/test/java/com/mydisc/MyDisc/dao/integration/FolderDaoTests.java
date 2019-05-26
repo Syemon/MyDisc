@@ -42,9 +42,9 @@ public class FolderDaoTests {
     public void testFindChildrenOfRoot() {
         List<Folder> expectedFolders = new ArrayList<>();
         Session session = entityManager.unwrap(Session.class);
-        Folder parent = this.getFolder("parent");
-        Folder children1 = this.getFolder("children1");
-        Folder children2 = this.getFolder("children2");
+        Folder parent = getFolder("parent");
+        Folder children1 = getFolder("children1");
+        Folder children2 = getFolder("children2");
         children1.setParent(parent);
         children2.setParent(parent);
         session.persist(children1);
@@ -53,7 +53,7 @@ public class FolderDaoTests {
 
         expectedFolders.add(parent);
 
-        List<Folder> folders = this.folderDao.findChildren();
+        List<Folder> folders = folderDao.findChildren();
 
         Assert.assertEquals(expectedFolders, folders);
     }
@@ -63,9 +63,9 @@ public class FolderDaoTests {
     public void testFindChildren() {
         List<Folder> expectedFolders = new ArrayList<>();
         Session session = entityManager.unwrap(Session.class);
-        Folder parent = this.getFolder("parent");
-        Folder children1 = this.getFolder("children1");
-        Folder children2 = this.getFolder("children2");
+        Folder parent = getFolder("parent");
+        Folder children1 = getFolder("children1");
+        Folder children2 = getFolder("children2");
         children1.setParent(parent);
         children2.setParent(parent);
         session.persist(children1);
@@ -75,7 +75,7 @@ public class FolderDaoTests {
         expectedFolders.add(children1);
         expectedFolders.add(children2);
 
-        List<Folder> folders = this.folderDao.findChildren(parent.getId());
+        List<Folder> folders = folderDao.findChildren(parent.getId());
 
         Assert.assertEquals(expectedFolders, folders);
     }
@@ -85,8 +85,8 @@ public class FolderDaoTests {
     public void testMove_FromAnotherFolderToRoot() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = this.getFolder("folder");
-        Folder parentFolder = this.getFolder("parentFolder");
+        Folder folder = getFolder("folder");
+        Folder parentFolder = getFolder("parentFolder");
         folder.setParent(parentFolder);
         session.persist(folder);
         session.persist(parentFolder);
@@ -95,7 +95,7 @@ public class FolderDaoTests {
         Assert.assertEquals(folder.getParent(), parentFolder);
         Assert.assertTrue(parentFolder.getChildren().contains(folder));
 
-        this.folderDao.move(folder.getId());
+        folderDao.move(folder.getId());
 
         session.persist(folder);
         session.persist(parentFolder);
@@ -113,9 +113,9 @@ public class FolderDaoTests {
     public void testMove_FromAnotherFolderToAnotherFolder() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = this.getFolder("folder");
-        Folder parentFolder = this.getFolder("parentFolder");
-        Folder targetFolder = this.getFolder("targetFolder");
+        Folder folder = getFolder("folder");
+        Folder parentFolder = getFolder("parentFolder");
+        Folder targetFolder = getFolder("targetFolder");
 
         folder.setParent(parentFolder);
         session.persist(folder);
@@ -125,7 +125,7 @@ public class FolderDaoTests {
         Assert.assertEquals(folder.getParent(), parentFolder);
         Assert.assertTrue(parentFolder.getChildren().contains(folder));
 
-        this.folderDao.move(folder.getId(), targetFolder.getId());
+        folderDao.move(folder.getId(), targetFolder.getId());
 
         session.persist(folder);
         session.persist(parentFolder);
@@ -146,12 +146,12 @@ public class FolderDaoTests {
     public void testDelete_WhenInsideRoot() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = this.getFolder("folder");
+        Folder folder = getFolder("folder");
         UUID id = folder.getId();
 
-        this.folderDao.deleteById(folder.getId());
+        folderDao.deleteById(folder.getId());
 
-        Assert.assertFalse(this.folderDao.exists(id));
+        Assert.assertFalse(folderDao.exists(id));
     }
 
     @Test
@@ -159,15 +159,15 @@ public class FolderDaoTests {
     public void testDelete_WhenInsideParentFolder_FolderIsDeletedAndParentFolderExists() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = this.getFolder("folder");
-        Folder parent = this.getFolder("parent");
+        Folder folder = getFolder("folder");
+        Folder parent = getFolder("parent");
         folder.setParent(parent);
         UUID id = folder.getId();
 
-        this.folderDao.deleteById(folder.getId());
+        folderDao.deleteById(folder.getId());
         session.refresh(parent);
 
-        Assert.assertFalse(this.folderDao.exists(id));
+        Assert.assertFalse(folderDao.exists(id));
         Assert.assertFalse(parent.hasChildren());
     }
 
@@ -176,18 +176,18 @@ public class FolderDaoTests {
     public void testDelete_WhenInsideParentFolderWithAnotherFolder_FolderIsDeletedAndParentFolderExists() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder parent = this.getFolder("folder");
-        Folder child = this.getFolder("folder");
-        Folder anotherChild = this.getFolder("folder");
+        Folder parent = getFolder("folder");
+        Folder child = getFolder("folder");
+        Folder anotherChild = getFolder("folder");
         child.setParent(parent);
         anotherChild.setParent(parent);
 
-        this.folderDao.deleteById(child.getId());
+        folderDao.deleteById(child.getId());
         session.refresh(parent);
 
-        Assert.assertFalse(this.folderDao.exists(child.getId()));
-        Assert.assertTrue(this.folderDao.exists(parent.getId()));
-        Assert.assertTrue(this.folderDao.exists(anotherChild.getId()));
+        Assert.assertFalse(folderDao.exists(child.getId()));
+        Assert.assertTrue(folderDao.exists(parent.getId()));
+        Assert.assertTrue(folderDao.exists(anotherChild.getId()));
     }
 
     @Test
@@ -195,14 +195,14 @@ public class FolderDaoTests {
     public void testDelete_WhenDeletedParent_DeleteChild() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder parent = this.getFolder("folder");
-        Folder child = this.getFolder("folder");
+        Folder parent = getFolder("folder");
+        Folder child = getFolder("folder");
         child.setParent(parent);
 
-        this.folderDao.deleteById(parent.getId());
+        folderDao.deleteById(parent.getId());
 
-        Assert.assertFalse(this.folderDao.exists(parent.getId()));
-        Assert.assertFalse(this.folderDao.exists(child.getId()));
+        Assert.assertFalse(folderDao.exists(parent.getId()));
+        Assert.assertFalse(folderDao.exists(child.getId()));
     }
 
     @Test
@@ -210,13 +210,13 @@ public class FolderDaoTests {
     public void testDelete_WhenDeletedFolderInRoot_AnotherFolderInRootStillExists() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = this.getFolder("folder");
-        Folder folderInRoot = this.getFolder("folder");
+        Folder folder = getFolder("folder");
+        Folder folderInRoot = getFolder("folder");
 
-        this.folderDao.deleteById(folder.getId());
+        folderDao.deleteById(folder.getId());
 
-        Assert.assertFalse(this.folderDao.exists(folder.getId()));
-        Assert.assertTrue(this.folderDao.exists(folderInRoot.getId()));
+        Assert.assertFalse(folderDao.exists(folder.getId()));
+        Assert.assertTrue(folderDao.exists(folderInRoot.getId()));
     }
 
     @Test
@@ -224,19 +224,19 @@ public class FolderDaoTests {
     public void testDelete_WhenDeletedParent_NestedChildrenAreDeleted() {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder parent = this.getFolder("folder");
-        Folder child = this.getFolder("folder");
-        Folder childOfchild = this.getFolder("folder");
+        Folder parent = getFolder("folder");
+        Folder child = getFolder("folder");
+        Folder childOfchild = getFolder("folder");
 
         child.setParent(parent);
         childOfchild.setParent(child);
-        this.folderDao.deleteById(parent.getId());
+        folderDao.deleteById(parent.getId());
 
         session.flush();
 
-        Assert.assertFalse(this.folderDao.exists(parent.getId()));
-        Assert.assertFalse(this.folderDao.exists(child.getId()));
-        Assert.assertFalse(this.folderDao.exists(childOfchild.getId()));
+        Assert.assertFalse(folderDao.exists(parent.getId()));
+        Assert.assertFalse(folderDao.exists(child.getId()));
+        Assert.assertFalse(folderDao.exists(childOfchild.getId()));
     }
 
     @Test
@@ -244,23 +244,23 @@ public class FolderDaoTests {
     public void testDelete_WhenDeletedFolderWithFile_FileAndFolderIsDeleted() throws IOException {
         Session session = entityManager.unwrap(Session.class);
 
-        File file = this.getFileWithFolderRelation();
+        File file = getFileWithFolderRelation();
         Folder folder = file.getFolder();
 
-        this.folderDao.deleteById(folder.getId());
+        folderDao.deleteById(folder.getId());
 
         session.flush();
 
-        Assert.assertFalse(this.folderDao.exists(folder.getId()));
-        Assert.assertFalse(this.fileDao.exists(file.getId()));
+        Assert.assertFalse(folderDao.exists(folder.getId()));
+        Assert.assertFalse(fileDao.exists(file.getId()));
     }
 
     @Test
     @Transactional
     public void testExists_WhenExists_ReturnTrue() {
-        Folder folder = this.getFolder("Test");
+        Folder folder = getFolder("Test");
 
-        boolean result = this.folderDao.exists(folder.getId());
+        boolean result = folderDao.exists(folder.getId());
 
         Assert.assertTrue(result);
     }
@@ -268,7 +268,7 @@ public class FolderDaoTests {
     @Test
     @Transactional
     public void testExists_WhenNotExists_ReturnFalse() {
-        boolean result = this.folderDao.exists(UUID.randomUUID());
+        boolean result = folderDao.exists(UUID.randomUUID());
 
         Assert.assertFalse(result);
     }
@@ -304,8 +304,8 @@ public class FolderDaoTests {
 
     @Transactional
     private File getFileWithFolderRelation() throws IOException {
-        File file = this.getFile();
-        file.setFolder(this.getFolder("Lorem"));
+        File file = getFile();
+        file.setFolder(getFolder("Lorem"));
 
         entityManager.unwrap(Session.class);
         entityManager.persist(file);

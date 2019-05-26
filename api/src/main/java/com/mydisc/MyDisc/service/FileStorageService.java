@@ -47,7 +47,7 @@ public class FileStorageService {
             fileNames.put("fileName", fileName);
             fileNames.put("storageFileName", storedFileName);
 
-            Path targetLocation = this.fileStorageLocation.resolve(storedFileName);
+            Path targetLocation = fileStorageLocation.resolve(storedFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileNames;
@@ -66,7 +66,7 @@ public class FileStorageService {
 
     public Resource loadFileAsResource(String fileName) {
         try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Path filePath = fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;

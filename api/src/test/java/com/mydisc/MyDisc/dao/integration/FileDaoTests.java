@@ -36,15 +36,15 @@ public class FileDaoTests {
     @Transactional
     public void testFindById() {
         Session session = entityManager.unwrap(Session.class);
-        Folder folder = this.getFolder("folder");
+        Folder folder = getFolder("folder");
 
-        File file = this.getFile();
+        File file = getFile();
         file.setFolder(folder);
 
         session.persist(file);
         session.flush();
 
-        File resultFile = this.fileDao.findById(folder.getId(), file.getId());
+        File resultFile = fileDao.findById(folder.getId(), file.getId());
 
         Assert.assertEquals(file, resultFile);
     }
@@ -54,13 +54,13 @@ public class FileDaoTests {
     public void testList_LocatedInTheRootFolder() {
         List<File> expectedFiles = new ArrayList<>();
 
-        File file1 = this.getFile();
-        File file2 = this.getFile();
+        File file1 = getFile();
+        File file2 = getFile();
 
         expectedFiles.add(file1);
         expectedFiles.add(file2);
 
-        List<File> resultFiles = this.fileDao.list();
+        List<File> resultFiles = fileDao.list();
 
         Assert.assertEquals(expectedFiles, resultFiles);
     }
@@ -69,19 +69,19 @@ public class FileDaoTests {
     @Transactional
     public void testList_LocatedInTheRootFolder_WhenFilesAreOnlyInADifferentFolder() {
         List<File> expectedFiles = new ArrayList<>();
-        Folder folder = this.getFolder("folder");
+        Folder folder = getFolder("folder");
 
         Session session = entityManager.unwrap(Session.class);
 
-        File file1 = this.getFile();
-        File file2 = this.getFile();
+        File file1 = getFile();
+        File file2 = getFile();
         file1.setFolder(folder);
         file2.setFolder(folder);
         session.persist(file1);
         session.persist(file2);
         session.flush();
 
-        List<File> resultFiles = this.fileDao.list();
+        List<File> resultFiles = fileDao.list();
 
         Assert.assertEquals(expectedFiles, resultFiles);
     }
@@ -90,12 +90,12 @@ public class FileDaoTests {
     @Transactional
     public void testList_LocatedInSomeFolder() {
         List<File> expectedFiles = new ArrayList<>();
-        Folder folder = this.getFolder("folder");
+        Folder folder = getFolder("folder");
 
         Session session = entityManager.unwrap(Session.class);
 
-        File file1 = this.getFile();
-        File file2 = this.getFile();
+        File file1 = getFile();
+        File file2 = getFile();
         file1.setFolder(folder);
         file2.setFolder(folder);
 
@@ -106,7 +106,7 @@ public class FileDaoTests {
         expectedFiles.add(file1);
         expectedFiles.add(file2);
 
-        List<File> resultFiles = this.fileDao.list(folder.getId());
+        List<File> resultFiles = fileDao.list(folder.getId());
 
         Assert.assertEquals(expectedFiles, resultFiles);
     }
@@ -115,12 +115,12 @@ public class FileDaoTests {
     @Transactional
     public void testList_LocatedInSomeFolder_WhenFilesAreOnlyInTheRoot() {
         List<File> expectedFiles = new ArrayList<>();
-        Folder folder = this.getFolder("folder");
+        Folder folder = getFolder("folder");
 
-        File file1 = this.getFile();
-        File file2 = this.getFile();
+        File file1 = getFile();
+        File file2 = getFile();
 
-        List<File> resultFiles = this.fileDao.list(folder.getId());
+        List<File> resultFiles = fileDao.list(folder.getId());
 
         Assert.assertEquals(expectedFiles, resultFiles);
     }
@@ -132,12 +132,12 @@ public class FileDaoTests {
 
         Session session = entityManager.unwrap(Session.class);
 
-        Folder targetFolder = this.getFolder("targetFolder");
-        File file = this.getFile();
+        Folder targetFolder = getFolder("targetFolder");
+        File file = getFile();
 
         filePojo.setFolderId(targetFolder.getId());
 
-        this.fileDao.move(file.getId(), filePojo);
+        fileDao.move(file.getId(), filePojo);
 
         session.persist(file);
         session.flush();
@@ -154,9 +154,9 @@ public class FileDaoTests {
 
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = this.getFolder("folder");
-        Folder targetFolder = this.getFolder("targetFolder");
-        File file = this.getFile();
+        Folder folder = getFolder("folder");
+        Folder targetFolder = getFolder("targetFolder");
+        File file = getFile();
 
         file.setFolder(folder);
         session.persist(folder);
@@ -164,7 +164,7 @@ public class FileDaoTests {
 
         filePojo.setFolderId(targetFolder.getId());
 
-        this.fileDao.move(folder.getId(), file.getId(), filePojo);
+        fileDao.move(folder.getId(), file.getId(), filePojo);
 
         session.persist(file);
         session.flush();
@@ -179,7 +179,7 @@ public class FileDaoTests {
     public void testExists_WhenExists_ReturnTrue() {
         File file = getFile();
 
-        boolean result = this.fileDao.exists(file.getId());
+        boolean result = fileDao.exists(file.getId());
 
         Assert.assertTrue(result);
     }
@@ -187,7 +187,7 @@ public class FileDaoTests {
     @Test
     @Transactional
     public void testExists_WhenNotExists_ReturnFalse() {
-        boolean result = this.fileDao.exists(UUID.randomUUID());
+        boolean result = fileDao.exists(UUID.randomUUID());
 
         Assert.assertFalse(result);
     }
@@ -195,9 +195,9 @@ public class FileDaoTests {
     @Test
     @Transactional
     public void testExists_WhenExistsInsideFolder_ReturnTrue() {
-        File file = this.getFileWithFolderRelation();
+        File file = getFileWithFolderRelation();
 
-        boolean result = this.fileDao.exists(
+        boolean result = fileDao.exists(
                 file.getFolder().getId(),
                 file.getId()
         );
@@ -210,7 +210,7 @@ public class FileDaoTests {
     public void testExists_WhenNotExistsInsideFolder_ReturnFalse() {
         File file = getFile();
 
-        boolean result = this.fileDao.exists(UUID.randomUUID(), file.getId());
+        boolean result = fileDao.exists(UUID.randomUUID(), file.getId());
 
         Assert.assertFalse(result);
     }
@@ -221,10 +221,10 @@ public class FileDaoTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", new byte[1024 * 1024 * 30]);
 
-        this.getFileWithGivenSize(5000000L);
-        this.getFileWithGivenSize(9000000L);
+        getFileWithGivenSize(5000000L);
+        getFileWithGivenSize(9000000L);
 
-        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+        boolean result = fileDao.isEnoughSpace(multipartFile);
 
         Assert.assertTrue(result);
     }
@@ -235,7 +235,7 @@ public class FileDaoTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", new byte[1024 * 1024 * 30]);
 
-        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+        boolean result = fileDao.isEnoughSpace(multipartFile);
 
         Assert.assertTrue(result);
     }
@@ -246,7 +246,7 @@ public class FileDaoTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", new byte[1024 * 1024 * 51]);
 
-        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+        boolean result = fileDao.isEnoughSpace(multipartFile);
 
         Assert.assertFalse(result);
     }
@@ -257,10 +257,10 @@ public class FileDaoTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", new byte[1024 * 1024 * 51]);
 
-        this.getFileWithGivenSize(24000000L);
-        this.getFileWithGivenSize(24000000L);
+        getFileWithGivenSize(24000000L);
+        getFileWithGivenSize(24000000L);
 
-        boolean result = this.fileDao.isEnoughSpace(multipartFile);
+        boolean result = fileDao.isEnoughSpace(multipartFile);
 
         Assert.assertFalse(result);
     }
@@ -271,12 +271,12 @@ public class FileDaoTests {
     public void testDelete_WhenInRoot() throws IOException {
         Session session = entityManager.unwrap(Session.class);
 
-        File file = this.getFileWithStorage();
+        File file = getFileWithStorage();
 
-        this.fileDao.delete(file.getId());
+        fileDao.delete(file.getId());
         session.flush();
 
-        Assert.assertFalse(this.fileDao.exists(file.getId()));
+        Assert.assertFalse(fileDao.exists(file.getId()));
     }
 
     @Test
@@ -284,12 +284,12 @@ public class FileDaoTests {
     public void testDelete_WhenInFolder() throws IOException {
         Session session = entityManager.unwrap(Session.class);
 
-        File file = this.getFileWithFolderRelation();
+        File file = getFileWithFolderRelation();
 
-        this.fileDao.delete(file.getId());
+        fileDao.delete(file.getId());
         session.flush();
 
-        Assert.assertFalse(this.fileDao.exists(file.getId()));
+        Assert.assertFalse(fileDao.exists(file.getId()));
     }
 
     @Transactional
@@ -353,8 +353,8 @@ public class FileDaoTests {
 
     @Transactional
     private File getFileWithFolderRelation() {
-        File file = this.getFile();
-        file.setFolder(this.getFolder("Lorem"));
+        File file = getFile();
+        file.setFolder(getFolder("Lorem"));
 
         entityManager.unwrap(Session.class);
         entityManager.persist(file);

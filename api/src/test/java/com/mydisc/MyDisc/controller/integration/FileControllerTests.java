@@ -39,10 +39,10 @@ public class FileControllerTests {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
 
-        Folder folder = this.getFolder("folder");
+        Folder folder = getFolder("folder");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/{folderId}/files", folder.getId())
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/{folderId}/files", folder.getId())
                 .file(multipartFile))
                 .andExpect(status().isOk())
                 .andExpect(
@@ -65,7 +65,7 @@ public class FileControllerTests {
 
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
                 .file(multipartFile))
                 .andExpect(status().isOk())
                 .andExpect(
@@ -83,9 +83,9 @@ public class FileControllerTests {
     @Transactional
     private Folder getFolder(String name) {
         Folder folder = new Folder(name);
-        this.entityManager.unwrap(Session.class);
-        this.entityManager.persist(folder);
-        this.entityManager.flush();
+        entityManager.unwrap(Session.class);
+        entityManager.persist(folder);
+        entityManager.flush();
 
         return folder;
     }

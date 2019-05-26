@@ -46,22 +46,22 @@ public class FileServiceTests {
 
     @Before
     public void setFile() {
-        when(this.file.getId()).thenReturn(UUID.randomUUID());
-        when(this.file.getName()).thenReturn("test.txt");
-        when(this.file.getSize()).thenReturn(12313L);
-        when(this.file.getStorageName()).thenReturn("1234567890ABCDEF");
-        when(this.file.getType()).thenReturn("text/plain");
+        when(file.getId()).thenReturn(UUID.randomUUID());
+        when(file.getName()).thenReturn("test.txt");
+        when(file.getSize()).thenReturn(12313L);
+        when(file.getStorageName()).thenReturn("1234567890ABCDEF");
+        when(file.getType()).thenReturn("text/plain");
     }
 
     @Test
     public void testList_WithoutFolderId() {
         List<File> files = new ArrayList<>();
-        files.add(this.file);
+        files.add(file);
 
-        when(this.fileDao.list()).thenReturn(new ArrayList<File>(files));
+        when(fileDao.list()).thenReturn(new ArrayList<File>(files));
 
-        List<File> resultFiles = this.fileService.list();
-        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
+        List<File> resultFiles = fileService.list();
+        Resources<FileResource> resources = fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertTrue(fileResource instanceof FileResource);
@@ -75,12 +75,12 @@ public class FileServiceTests {
     @Test
     public void testList_WithFolderId() {
         List<File> files = new ArrayList<>();
-        files.add(this.file);
+        files.add(file);
 
-        when(this.fileDao.list(any(UUID.class))).thenReturn(new ArrayList<File>(files));
+        when(fileDao.list(any(UUID.class))).thenReturn(new ArrayList<File>(files));
 
-        List<File> resultFiles = this.fileService.list(UUID.randomUUID());
-        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
+        List<File> resultFiles = fileService.list(UUID.randomUUID());
+        Resources<FileResource> resources = fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertTrue(fileResource instanceof FileResource);
@@ -93,10 +93,10 @@ public class FileServiceTests {
 
     @Test
     public void testList_WithoutFolderId_WithNoFilesFound() {
-        when(this.fileDao.list()).thenReturn(new ArrayList<File>());
+        when(fileDao.list()).thenReturn(new ArrayList<File>());
 
-        List<File> resultFiles = this.fileService.list();
-        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
+        List<File> resultFiles = fileService.list();
+        Resources<FileResource> resources = fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertFalse(fileResource instanceof FileResource);
@@ -109,10 +109,10 @@ public class FileServiceTests {
 
     @Test
     public void testList_WithFolderId_WithNoFilesFound() {
-        when(this.fileDao.list(any(UUID.class))).thenReturn(new ArrayList<File>());
+        when(fileDao.list(any(UUID.class))).thenReturn(new ArrayList<File>());
 
-        List<File> resultFiles = this.fileService.list(UUID.randomUUID());
-        Resources<FileResource> resources = this.fileService.getFileResources(resultFiles);
+        List<File> resultFiles = fileService.list(UUID.randomUUID());
+        Resources<FileResource> resources = fileService.getFileResources(resultFiles);
 
         for (Object fileResource: resources) {
             assertFalse(fileResource instanceof FileResource);
@@ -125,61 +125,61 @@ public class FileServiceTests {
 
     @Test
     public void testMove_FromRootFolder() {
-        this.fileService.move(UUID.randomUUID(), mock(FilePojo.class));
+        fileService.move(UUID.randomUUID(), mock(FilePojo.class));
 
-        verify(this.fileDao, times(1)).move(any(UUID.class),any(FilePojo.class));
+        verify(fileDao, times(1)).move(any(UUID.class),any(FilePojo.class));
     }
 
     @Test
     public void testMove() {
-        this.fileService.move(UUID.randomUUID(), UUID.randomUUID(), mock(FilePojo.class));
+        fileService.move(UUID.randomUUID(), UUID.randomUUID(), mock(FilePojo.class));
 
-        verify(this.fileDao, times(1)).move(
+        verify(fileDao, times(1)).move(
                 any(UUID.class), any(UUID.class), any(FilePojo.class));
     }
 
     @Test
     public void testDelete() {
-        doNothing().when(this.fileStorageService).deleteFile(any(String.class));
-        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
-        this.fileService.delete(UUID.randomUUID());
+        doNothing().when(fileStorageService).deleteFile(any(String.class));
+        when(fileService.findById(any(UUID.class))).thenReturn(file);
+        fileService.delete(UUID.randomUUID());
 
-        verify(this.fileDao, times(1)).delete(
+        verify(fileDao, times(1)).delete(
                 any(UUID.class));
     }
 
     @Test
     public void testExists_WhenExists_ReturnTrue() {
-        when(this.fileDao.exists(any(UUID.class))).thenReturn(true);
+        when(fileDao.exists(any(UUID.class))).thenReturn(true);
 
-        boolean result = this.fileService.exists(UUID.randomUUID());
+        boolean result = fileService.exists(UUID.randomUUID());
 
         Assert.assertTrue(result);
     }
 
     @Test
     public void testExists_WhenNotExists_ReturnFalse() {
-        when(this.fileDao.exists(any(UUID.class))).thenReturn(false);
+        when(fileDao.exists(any(UUID.class))).thenReturn(false);
 
-        boolean result = this.fileService.exists(UUID.randomUUID());
+        boolean result = fileService.exists(UUID.randomUUID());
 
         Assert.assertFalse(result);
     }
 
     @Test
     public void testExists_WhenFileExistsInsideFolder_ReturnTrue() {
-        when(this.fileDao.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
+        when(fileDao.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
 
-        boolean result = this.fileService.exists(UUID.randomUUID(), UUID.randomUUID());
+        boolean result = fileService.exists(UUID.randomUUID(), UUID.randomUUID());
 
         Assert.assertTrue(result);
     }
 
     @Test
     public void testExists_WhenFileNotExistsInsideFolder_ReturnFalse() {
-        when(this.fileDao.exists(any(UUID.class), any(UUID.class))).thenReturn(false);
+        when(fileDao.exists(any(UUID.class), any(UUID.class))).thenReturn(false);
 
-        boolean result = this.fileService.exists(UUID.randomUUID(), UUID.randomUUID());
+        boolean result = fileService.exists(UUID.randomUUID(), UUID.randomUUID());
 
         Assert.assertFalse(result);
     }
@@ -188,9 +188,9 @@ public class FileServiceTests {
     public void testIsEnoughSpace_WhenNot_ReturnFalse() {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
-        when(this.fileDao.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
+        when(fileDao.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
 
-        boolean result = this.fileService.isEnoughSpace(multipartFile);
+        boolean result = fileService.isEnoughSpace(multipartFile);
 
         Assert.assertFalse(result);
     }
@@ -199,9 +199,9 @@ public class FileServiceTests {
     public void testIsEnoughSpace_WhenEnough_ReturnTrue() {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
-        when(this.fileDao.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
+        when(fileDao.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
 
-        boolean result = this.fileService.isEnoughSpace(multipartFile);
+        boolean result = fileService.isEnoughSpace(multipartFile);
 
         Assert.assertTrue(result);
     }

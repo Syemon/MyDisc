@@ -52,27 +52,27 @@ public class FileControllerTests {
 
     @Before
     public void setFile() {
-        when(this.file.getId()).thenReturn(UUID.randomUUID());
-        when(this.file.getName()).thenReturn("test.txt");
-        when(this.file.getSize()).thenReturn(12313L);
-        when(this.file.getStorageName()).thenReturn("1234567890ABCDEF");
-        when(this.file.getType()).thenReturn("text/plain");
+        when(file.getId()).thenReturn(UUID.randomUUID());
+        when(file.getName()).thenReturn("test.txt");
+        when(file.getSize()).thenReturn(12313L);
+        when(file.getStorageName()).thenReturn("1234567890ABCDEF");
+        when(file.getType()).thenReturn("text/plain");
     }
 
     @Before
     public void setFolder() {
-        when(this.folder.getId()).thenReturn(UUID.randomUUID());
+        when(folder.getId()).thenReturn(UUID.randomUUID());
     }
 
     @Test
     public void testCreate_WithRootFolder() throws Exception {
-        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
-        when(this.fileService.upload(any(MultipartFile.class))).thenReturn(this.file);
+        when(fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
+        when(fileService.upload(any(MultipartFile.class))).thenReturn(file);
 
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
                 .file(multipartFile))
                 .andExpect(status().isOk())
                 .andExpect(
@@ -89,15 +89,15 @@ public class FileControllerTests {
 
     @Test
     public void testCreate_WithSomeFolder() throws Exception {
-        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.upload(any(UUID.class), any(MultipartFile.class))).thenReturn(this.file);
+        when(fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(true);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.upload(any(UUID.class), any(MultipartFile.class))).thenReturn(file);
 
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(
-                "/api/folders/{folderId}/files", this.folder.getId())
+        mockMvc.perform(MockMvcRequestBuilders.multipart(
+                "/api/folders/{folderId}/files", folder.getId())
                 .file(multipartFile))
                 .andExpect(status().isOk())
                 .andExpect(
@@ -114,11 +114,11 @@ public class FileControllerTests {
 
     @Test
     public void testGet_WithRootFolder() throws Exception {
-        when(this.fileService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.findById(any(UUID.class))).thenReturn(this.file);
+        when(fileService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.findById(any(UUID.class))).thenReturn(file);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/folders/root/files/{fileId}",
-                this.file.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/folders/root/files/{fileId}",
+                file.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(
@@ -136,12 +136,12 @@ public class FileControllerTests {
 
     @Test
     public void testGet_WithSomeFolder() throws Exception {
-        when(this.fileService.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(this.file);
+        when(fileService.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(file);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get(
-                "/api/folders/{folderId}/files/{fileId}", this.folder.getId(), this.file.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                "/api/folders/{folderId}/files/{fileId}", folder.getId(), file.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(
@@ -159,14 +159,14 @@ public class FileControllerTests {
 
     @Test
     public void testMove_ValidateWithNotExistFolder() throws Exception {
-        when(this.folderService.findById(any(UUID.class))).thenReturn(null);
-        this.body = new HashMap<>();
-        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        when(folderService.findById(any(UUID.class))).thenReturn(null);
+        body = new HashMap<>();
+        body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.patch(
+        mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
-                "dad3cfda-5124-4389-b5c2-2433a380cc49", this.file.getId())
+                "dad3cfda-5124-4389-b5c2-2433a380cc49", file.getId())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -176,16 +176,16 @@ public class FileControllerTests {
 
     @Test
     public void testMove_ValidateWithNotExistFile() throws Exception {
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(null);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.findById(any(UUID.class), any(UUID.class))).thenReturn(null);
 
-        this.body = new HashMap<>();
-        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        body = new HashMap<>();
+        body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.patch(
+        mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
-                this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49")
+                folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49")
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -195,9 +195,9 @@ public class FileControllerTests {
 
     @Test
     public void testMove_ValidateWithoutBody() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.patch(
+        mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
-                this.folder.getId(), this.file.getId()))
+                folder.getId(), file.getId()))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -206,9 +206,9 @@ public class FileControllerTests {
 
     @Test
     public void testMove_ValidateWithNullFolderIdInBody() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.patch(
+        mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
-                this.folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49"))
+                folder.getId(), "dad3cfda-5124-4389-b5c2-2433a380cc49"))
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -217,46 +217,46 @@ public class FileControllerTests {
 
     @Test
     public void testMove() throws Exception {
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
 
-        this.body = new HashMap<>();
-        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        body = new HashMap<>();
+        body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.patch(
+        mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/{folderId}/files/{fileId}/move",
                 UUID.randomUUID().toString(), UUID.randomUUID().toString())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(this.fileService, times(1)).move(
+        verify(fileService, times(1)).move(
                 any(UUID.class), any(UUID.class), any(FilePojo.class));
     }
 
     @Test
     public void testMove_FromRootFolder() throws Exception {
-        when(this.fileService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.exists(any(UUID.class))).thenReturn(true);
 
-        this.body = new HashMap<>();
-        this.body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
+        body = new HashMap<>();
+        body.put("folderId", "2d2fe797-49ba-4bcd-8f42-1ccf0168771d");
         String jsonBody = mapper.writeValueAsString(body);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.patch(
+        mockMvc.perform(MockMvcRequestBuilders.patch(
                 "/api/folders/root/files/{fileId}/move",
                 UUID.randomUUID().toString())
                 .content(jsonBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(this.fileService, times(1)).move(
+        verify(fileService, times(1)).move(
                 any(UUID.class), any(FilePojo.class));
     }
 
     @Test
     public void testDelete_WhenInRootFileDoesNotExist_ReturnError() throws Exception {
-        when(this.fileService.exists(any(UUID.class))).thenReturn(false);
+        when(fileService.exists(any(UUID.class))).thenReturn(false);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+        mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/root/files/{fileId}",
                 UUID.randomUUID().toString()))
                 .andExpect(
@@ -267,10 +267,10 @@ public class FileControllerTests {
 
     @Test
     public void testDelete_WhenInFolderFileDoesNotExist_ReturnError() throws Exception {
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.exists(any(UUID.class))).thenReturn(false);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.exists(any(UUID.class))).thenReturn(false);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+        mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/{folderId}/files/{fileId}",
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()))
@@ -282,10 +282,10 @@ public class FileControllerTests {
 
     @Test
     public void testDelete_WhenFolderDoesNotExist_ReturnError() throws Exception {
-        when(this.folderService.exists(any(UUID.class))).thenReturn(false);
-        when(this.fileService.exists(any(UUID.class))).thenReturn(true);
+        when(folderService.exists(any(UUID.class))).thenReturn(false);
+        when(fileService.exists(any(UUID.class))).thenReturn(true);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+        mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/{folderId}/files/{fileId}",
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()))
@@ -297,29 +297,29 @@ public class FileControllerTests {
 
     @Test
     public void testDelete_WhenFileInRoot_ReturnSuccess() throws Exception {
-        when(this.fileService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.exists(any(UUID.class))).thenReturn(true);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+        mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/root/files/{fileId}",
                 UUID.randomUUID().toString()))
                 .andExpect(status().isNoContent());
 
-        verify(this.fileService, times(1)).delete(
+        verify(fileService, times(1)).delete(
                 any(UUID.class));
     }
 
     @Test
     public void testDelete_WhenFileInFolder_ReturnSuccess() throws Exception {
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.exists(any(UUID.class), any(UUID.class))).thenReturn(true);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(
+        mockMvc.perform(MockMvcRequestBuilders.delete(
                 "/api/folders/{folderId}/files/{fileId}",
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()))
                 .andExpect(status().isNoContent());
 
-        verify(this.fileService, times(1)).delete(
+        verify(fileService, times(1)).delete(
                 any(UUID.class));
     }
 
@@ -327,9 +327,9 @@ public class FileControllerTests {
     public void testUpload_WhenNotEnoughSpaceAndUploadToRoot_ReturnError() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
-        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
+        when(fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/root/files")
                 .file(multipartFile))
                 .andExpect(status().isBadRequest())
                 .andExpect(
@@ -342,11 +342,11 @@ public class FileControllerTests {
     public void testUpload_WhenNotEnoughSpaceAndUploadToFolder_ReturnError() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Spring Framework".getBytes());
-        when(this.folderService.exists(any(UUID.class))).thenReturn(true);
-        when(this.fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
+        when(folderService.exists(any(UUID.class))).thenReturn(true);
+        when(fileService.isEnoughSpace(any(MultipartFile.class))).thenReturn(false);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/{folderId}/files",
-                this.folder.getId())
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/folders/{folderId}/files",
+                folder.getId())
                 .file(multipartFile))
                 .andExpect(status().isBadRequest())
                 .andExpect(

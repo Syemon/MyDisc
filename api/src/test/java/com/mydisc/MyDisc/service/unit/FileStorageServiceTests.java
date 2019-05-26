@@ -52,7 +52,7 @@ public class FileStorageServiceTests {
 
 
         assertThrows(FileStorageException.class, () ->
-            this.fileStorageService.storeFile(multipartFile),
+            fileStorageService.storeFile(multipartFile),
                 "Sorry! Filename contains invalid path sequence ../test.txt");
     }
 }
