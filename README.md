@@ -1,6 +1,6 @@
 # MyDisc
 ## Description
-MyDisc is an desktop and web aplication, which allows to create folders and store files in them. Back-end is written in Spring Boot  and front end is written in ReactJs.  
+MyDisc is an desktop and web aplication, which allows to create folders and store files in them. Backend is written in Spring Boot and frontend is written in ReactJS.  
 The project is dockerized, implements HATEOS architecture and is hosted on GoogleCloud. **Currently only API is available.**
 
 ## Installation
@@ -24,7 +24,6 @@ You can make requests to API through swaggerHub. Examples of usage are available
 
 ## Authors
 * Front-end - [Martyna Szeszko](https://github.com/martyna007) 
-
 
 * Back-end - [Szymon Linowski](https://github.com/Syemon) 
 
