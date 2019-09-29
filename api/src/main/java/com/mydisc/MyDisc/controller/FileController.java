@@ -115,7 +115,7 @@ public class FileController {
     @PatchMapping(value = "/folders/root/files/{fileId}/move")
     public ResponseEntity moveFile(
             @PathVariable("fileId") UUID fileId,
-            @Valid @RequestBody FilePojo filePojo
+            @RequestBody FilePojo filePojo
     ) {
         if (!fileService.exists(fileId)) {
             throw new FolderNotFoundException("File was not found");
@@ -130,7 +130,7 @@ public class FileController {
     public ResponseEntity moveFile(
             @PathVariable("folderId") UUID folderId,
             @PathVariable("folderId") UUID fileId,
-            @Valid @RequestBody FilePojo filePojo
+            @RequestBody FilePojo filePojo
     ) {
         if (!folderService.exists(folderId)) {
             throw new FolderNotFoundException("Folder was not found");

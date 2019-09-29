@@ -148,10 +148,15 @@ public class FileDao {
     public void move(UUID fileId, FilePojo filePojo) {
         Session session = entityManager.unwrap(Session.class);
 
-        Folder folder = session.get(Folder.class, filePojo.getFolderId());
         File file = session.get(File.class, fileId);
+        if (!filePojo.getFolderId().isPresent()) {
+            file.setFolder(null);
+
+            return;
+        }
+
+        Folder folder = session.get(Folder.class, filePojo.getFolderId().get());
         file.setFolder(folder);
-        session.save(file);
     }
 
     public void move(UUID folderId, UUID fileId, FilePojo filePojo) {
@@ -167,10 +172,16 @@ public class FileDao {
         query.setParameter("fileId", fileId);
 
         File file = query.getSingleResult();
-        Folder folder = session.get(Folder.class, filePojo.getFolderId());
+
+        if (!filePojo.getFolderId().isPresent()) {
+            file.setFolder(null);
+
+            return;
+        }
+
+        Folder folder = session.get(Folder.class, filePojo.getFolderId().get());
 
         file.setFolder(folder);
-        session.save(file);
     }
 
     public boolean isEnoughSpace(MultipartFile file) {
