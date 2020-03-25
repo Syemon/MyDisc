@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name="file")
-public class File {
+public class File extends BaseEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
